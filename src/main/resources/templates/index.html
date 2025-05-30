@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KosKeun - Cari & Sewa Kos dengan Mudah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .btn-primary {
+            background-image: linear-gradient(to right, #10b981, #059669);
+        }
+
+        .btn-primary:hover {
+            background-image: linear-gradient(to right, #059669, #047857);
+            transform: translateY(-2px);
+        }
+
+        .kos-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path
+                            d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    </svg>
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                        KosKeun</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-600 hover:text-emerald-600 transition-colors font-medium">Beranda</a>
+                    <a href="#kos-terbaru"
+                        class="text-gray-600 hover:text-emerald-600 transition-colors font-medium">Cari Kos</a>
+                    <a href="#fitur"
+                        class="text-gray-600 hover:text-emerald-600 transition-colors font-medium">Fitur</a>
+                    <a href="#testimoni"
+                        class="text-gray-600 hover:text-emerald-600 transition-colors font-medium">Testimoni</a>
+                    <a th:href="@{/login}"
+                        class="btn-primary text-white px-5 py-2 rounded-lg font-medium transition-all shadow-md hover:shadow-emerald-200">
+                        Masuk/Daftar
+                    </a>
+                </div>
+                <button class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-br from-green-50 to-emerald-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                        Temukan Kos <span class="text-emerald-600">Nyaman</span> dengan Harga Terjangkau
+                    </h1>
+                    <p class="mt-6 text-lg text-gray-600">
+                        KosKeun membantu Anda menemukan tempat tinggal ideal dengan ribuan pilihan kos di seluruh
+                        Indonesia.
+                        Cari berdasarkan lokasi, fasilitas, dan budget yang sesuai.
+                    </p>
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <a href="#kos-terbaru"
+                            class="btn-primary text-white px-8 py-3 rounded-lg font-medium text-center transition-all shadow-lg">
+                            Cari Kos Sekarang
+                        </a>
+                        <a href="#"
+                            class="border border-emerald-600 text-emerald-600 px-8 py-3 rounded-lg font-medium text-center hover:bg-emerald-50 transition-colors">
+                            Lihat Demo <i class="fas fa-play-circle ml-2"></i>
+                        </a>
+                    </div>
+                    <div class="mt-10 flex items-center space-x-6">
+                        <div class="flex -space-x-2">
+                            <img class="w-10 h-10 rounded-full border-2 border-white"
+                                src="https://randomuser.me/api/portraits/women/12.jpg" alt="">
+                            <img class="w-10 h-10 rounded-full border-2 border-white"
+                                src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+                            <img class="w-10 h-10 rounded-full border-2 border-white"
+                                src="https://randomuser.me/api/portraits/women/45.jpg" alt="">
+                        </div>
+                        <div>
+                            <p class="text-gray-600"><span class="font-bold text-emerald-600">5000+</span> pengguna
+                                aktif</p>
+                            <div class="flex items-center mt-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span class="ml-2 text-gray-600">4.9 (2.4k reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                        alt="Kos Nyaman" class="rounded-xl shadow-2xl w-full h-auto object-cover">
+                    <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-emerald-100 rounded-full mr-3">
+                                <i class="fas fa-home text-emerald-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900">10.000+</p>
+                                <p class="text-sm text-gray-600">Kos Tersedia</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Section -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-500 mb-8">Dipercaya oleh mitra terbaik</p>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-center">
+                <img src="https://placehold.co/150x60?text=Partner+1" alt="Partner 1"
+                    class="h-12 object-contain opacity-70 hover:opacity-100 transition-opacity">
+                <img src="https://placehold.co/150x60?text=Partner+2" alt="Partner 2"
+                    class="h-12 object-contain opacity-70 hover:opacity-100 transition-opacity">
+                <img src="https://placehold.co/150x60?text=Partner+3" alt="Partner 3"
+                    class="h-12 object-contain opacity-70 hover:opacity-100 transition-opacity">
+                <img src="https://placehold.co/150x60?text=Partner+4" alt="Partner 4"
+                    class="h-12 object-contain opacity-70 hover:opacity-100 transition-opacity">
+                <img src="https://placehold.co/150x60?text=Partner+5" alt="Partner 5"
+                    class="h-12 object-contain opacity-70 hover:opacity-100 transition-opacity">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="fitur" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Mengapa Memilih KosKeun?</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Kami memberikan pengalaman terbaik dalam mencari kos dengan berbagai keunggulan
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-white p-8 rounded-xl shadow-md hover:border-emerald-500 border border-transparent transition-all">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-search text-emerald-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Pencarian Cerdas</h3>
+                    <p class="text-gray-600">
+                        Temukan kos sesuai kriteria Anda dengan filter lengkap: lokasi, harga, fasilitas, dan banyak
+                        lagi.
+                    </p>
+                </div>
+                <div
+                    class="bg-white p-8 rounded-xl shadow-md hover:border-emerald-500 border border-transparent transition-all">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-emerald-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Terverifikasi</h3>
+                    <p class="text-gray-600">
+                        Semua kos melalui proses verifikasi ketat untuk memastikan kualitas dan keamanan bagi penghuni.
+                    </p>
+                </div>
+                <div
+                    class="bg-white p-8 rounded-xl shadow-md hover:border-emerald-500 border border-transparent transition-all">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-comments text-emerald-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Konsultasi Gratis</h3>
+                    <p class="text-gray-600">
+                        Tim ahli kami siap membantu Anda menemukan kos yang tepat sesuai kebutuhan dan budget.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kos Terbaru Section -->
+    <section id="kos-terbaru" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Kos Terbaru</h2>
+                    <p class="text-gray-600 mt-2">Temukan pilihan kos terbaik di berbagai kota</p>
+                </div>
+                <a href="#" class="mt-4 md:mt-0 text-emerald-600 font-medium hover:text-emerald-800 transition-colors">
+                    Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Kos Card 1 -->
+                <div class="kos-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                            alt="Kos Mewah" class="w-full h-48 object-cover">
+                        <div
+                            class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Populer
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-gray-900">Kos Green Valley</h3>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span class="ml-1 text-gray-600">4.8</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mt-2 flex items-center">
+                            <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i> Jakarta Selatan
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">AC</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Kamar Mandi
+                                Dalam</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Dapur Bersama</span>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <p class="text-emerald-600 font-bold text-lg">Rp 1.800.000<span
+                                    class="text-gray-500 text-sm font-normal">/bulan</span></p>
+                            <a href="#" class="text-emerald-600 hover:text-emerald-800 font-medium">Detail</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kos Card 2 -->
+                <div class="kos-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                            alt="Kos Minimalis" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-gray-900">Kos Minimalis 99</h3>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span class="ml-1 text-gray-600">4.5</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mt-2 flex items-center">
+                            <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i> Bandung
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">WiFi</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Laundry</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Parkir Motor</span>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <p class="text-emerald-600 font-bold text-lg">Rp 1.200.000<span
+                                    class="text-gray-500 text-sm font-normal">/bulan</span></p>
+                            <a href="#" class="text-emerald-600 hover:text-emerald-800 font-medium">Detail</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kos Card 3 -->
+                <div class="kos-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                            alt="Kos Ekonomis" class="w-full h-48 object-cover">
+                        <div
+                            class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            Promo
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-gray-900">Kos Sejahtera</h3>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span class="ml-1 text-gray-600">4.2</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mt-2 flex items-center">
+                            <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i> Surabaya
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Kipas Angin</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Kamar Mandi
+                                Bersama</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Dekat Kampus</span>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <p class="text-emerald-600 font-bold text-lg">Rp 800.000<span
+                                    class="text-gray-500 text-sm font-normal">/bulan</span></p>
+                            <a href="#" class="text-emerald-600 hover:text-emerald-800 font-medium">Detail</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimoni Section -->
+    <section id="testimoni" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Apa Kata Mereka?</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Testimoni dari pengguna yang telah menemukan kos impian melalui KosKeun
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User"
+                            class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-900">Sarah Wijaya</h4>
+                            <p class="text-gray-600 text-sm">Mahasiswa</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-2">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600">
+                        "Sangat membantu! Saya menemukan kos dekat kampus dengan harga terjangkau dalam waktu 3 hari
+                        saja. Fasilitas lengkap dan pemiliknya ramah."
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="User"
+                            class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-900">Budi Santoso</h4>
+                            <p class="text-gray-600 text-sm">Karyawan</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-2">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600">
+                        "Sebagai karyawan yang baru pindah kota, KosKeun sangat memudahkan saya mencari kos dekat
+                        kantor. Filter pencariannya sangat membantu!"
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User"
+                            class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-900">Dewi Lestari</h4>
+                            <p class="text-gray-600 text-sm">Pemilik Kos</p>
+                        </div>
+                    </div>
+                    <div class="flex mb-2">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600">
+                        "Platform yang bagus untuk mempromosikan kos saya. Dalam 2 minggu sudah ada 5 penghuni baru.
+                        Sistem pembayaran online-nya juga praktis."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-emerald-600 to-green-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-6">Siap Mencari Kos Impian Anda?</h2>
+            <p class="text-lg mb-8 max-w-2xl mx-auto">
+                Daftar sekarang dan dapatkan akses ke ribuan pilihan kos terbaik di seluruh Indonesia
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a th:href="@{/register}"
+                    class="bg-white text-emerald-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors shadow-lg">
+                    Daftar Sekarang
+                </a>
+                <a href="#"
+                    class="border border-white text-white px-8 py-3 rounded-lg font-medium hover:bg-white hover:text-emerald-600 transition-colors">
+                    Pelajari Lebih Lanjut
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-400" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path
+                                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                        <h2 class="text-2xl font-bold text-white">KosKeun</h2>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        Platform pencarian kos terbaik di Indonesia dengan ribuan pilihan kos di berbagai kota.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Perusahaan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Tentang Kami</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Karir</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Kontak</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Cari Kos</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Pasang Iklan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Konsultasi</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-3 text-emerald-400"></i> Jakarta, Indonesia
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-emerald-400"></i> hello@koskeun.com
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-3 text-emerald-400"></i> +62 812 3456 7890
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>© 2024 KosKeun. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop"
+        class="fixed bottom-8 right-8 bg-emerald-600 text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Back to Top Button
+        const backToTopButton = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.remove('opacity-100', 'visible');
+                backToTopButton.classList.add('opacity-0', 'invisible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Mobile Menu Toggle (can be implemented later)
+        const mobileMenuButton = document.querySelector('.md\\:hidden');
+        const mobileMenu = document.querySelector('.mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+
+</html>

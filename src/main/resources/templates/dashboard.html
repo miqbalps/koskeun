@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - KosKeun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .sidebar-item.active {
+            background-color: rgba(16, 185, 129, 0.2);
+            border-left: 4px solid #10b981;
+        }
+
+        .quick-action-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-white shadow-md fixed h-full">
+            <div class="p-4 flex items-center space-x-2 border-b border-gray-200 h-16">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path
+                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                </svg>
+                <h1
+                    class="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    KosKeun</h1>
+            </div>
+
+            <div class="p-4">
+                <!-- User Profile -->
+                <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
+                    <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                    <div>
+                        <p class="font-medium text-gray-900" th:text="${#authentication.principal.fullName}">John Doe
+                        </p>
+                        <p class="text-xs text-gray-500" th:text="${#authentication.principal.roleName}">Pemilik Kos
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Menu Items -->
+                <nav class="space-y-1">
+                    <a href="/dashboard"
+                        class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-tachometer-alt text-emerald-600 w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-home text-emerald-600 w-5"></i>
+                        <span>Kos Saya</span>
+                    </a>
+
+                    <a href="/kos/search" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-search text-emerald-600 w-5"></i>
+                        <span>Cari Kos</span>
+                    </a>
+
+                    <a href="/profile" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-user text-emerald-600 w-5"></i>
+                        <span>Profil Saya</span>
+                    </a>
+
+                    <a href="/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
+                        <span>Pesanan Saya</span>
+                    </a>
+
+                    <a href="/transactions" sec:authorize="hasRole('ROLE_PEMILIK')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-money-bill-wave text-emerald-600 w-5"></i>
+                        <span>Transaksi</span>
+                    </a>
+
+                    <form th:action="@{/auth/logout}" method="POST" class="m-0">
+                        <button type="submit"
+                            class="sidebar-item w-full flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-red-600">
+                            <i class="fas fa-sign-out-alt text-red-500 w-5"></i>
+                            <span>Keluar</span>
+                        </button>
+                    </form>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64">
+            <!-- Top Bar -->
+            <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
+                style="width: calc(100% - 16rem)">
+                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <main class="p-6 mt-16">
+                <!-- Welcome Banner -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        Selamat datang, <span class="text-emerald-600"
+                            th:text="${#authentication.principal.fullName}">User</span>!
+                    </h2>
+                    <p class="text-gray-600 mt-2">Apa yang ingin Anda lakukan hari ini?</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <h3 class="text-xl font-semibold text-gray-700 mb-6">Aksi Cepat</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div sec:authorize="hasRole('ROLE_PEMILIK')" class="quick-action-card">
+                        <a href="/kos/add"
+                            class="flex flex-col items-center justify-center p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl text-white h-full">
+                            <i class="fas fa-plus-circle text-3xl mb-3"></i>
+                            <span class="text-lg font-medium">Tambah Kos Baru</span>
+                            <p class="text-sm text-emerald-100 mt-2 text-center">Tambahkan properti kos Anda ke platform
+                            </p>
+                        </a>
+                    </div>
+
+                    <div sec:authorize="hasRole('ROLE_PENCARI')" class="quick-action-card">
+                        <a href="/kos/search"
+                            class="flex flex-col items-center justify-center p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl text-white h-full">
+                            <i class="fas fa-search text-3xl mb-3"></i>
+                            <span class="text-lg font-medium">Cari Kos</span>
+                            <p class="text-sm text-emerald-100 mt-2 text-center">Temukan kos impian Anda</p>
+                        </a>
+                    </div>
+
+                    <div class="quick-action-card">
+                        <a href="/profile"
+                            class="flex flex-col items-center justify-center p-6 border-2 border-emerald-600 rounded-xl text-emerald-600 bg-white h-full">
+                            <i class="fas fa-user-edit text-3xl mb-3"></i>
+                            <span class="text-lg font-medium">Edit Profil</span>
+                            <p class="text-sm text-gray-600 mt-2 text-center">Perbarui informasi profil Anda</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold text-gray-800">Aktivitas Terkini</h3>
+                        <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Lihat Semua</a>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="bg-emerald-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-home text-emerald-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium" sec:authorize="hasRole('ROLE_PEMILIK')">Kos "Green Valley" baru
+                                    saja dipesan</p>
+                                <p class="font-medium" sec:authorize="hasRole('ROLE_PENCARI')">Anda baru memesan Kos
+                                    "Green Valley"</p>
+                                <p class="text-sm text-gray-500">2 jam yang lalu</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-bell text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Pembayaran terkonfirmasi</p>
+                                <p class="text-sm text-gray-500">Kemarin, 14:32</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-envelope text-purple-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Pesan baru dari pemilik kos</p>
+                                <p class="text-sm text-gray-500">Kemarin, 10:15</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle functionality can be added here
+        // For example:
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.toggle('hidden');
+        });
+
+        // Set active sidebar item based on current page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            const link = item.getAttribute('href');
+            if (currentPath.includes(link)) {
+                item.classList.add('active');
+            }
+        });
+    </script>
+</body>
+
+</html>
