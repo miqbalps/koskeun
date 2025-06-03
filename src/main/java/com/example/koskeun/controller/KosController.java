@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -87,21 +88,71 @@ public class KosController {
     public String addKos(
             @Valid @ModelAttribute("kos") KosRequest request,
             BindingResult bindingResult,
-            @RequestParam("images") List<MultipartFile> images,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+            @RequestParam("frontBuilding") MultipartFile frontBuilding,
+            @RequestParam("interior") MultipartFile interior,
+            @RequestParam(value = "streetView", required = false) MultipartFile streetView,
+            @RequestParam("roomFront") MultipartFile roomFront,
+            @RequestParam("roomInterior") MultipartFile roomInterior,
+            @RequestParam("bathroom") MultipartFile bathroom,
+            @RequestParam(value = "additionalImages", required = false) MultipartFile[] additionalImages,
+            @RequestParam("frontBuildingType") String frontBuildingType,
+            @RequestParam("interiorType") String interiorType,
+            @RequestParam(value = "streetViewType", required = false) String streetViewType,
+            @RequestParam("roomFrontType") String roomFrontType,
+            @RequestParam("roomInteriorType") String roomInteriorType,
+            @RequestParam("bathroomType") String bathroomType,
+            @RequestParam(value = "additionalImagesType", required = false) String additionalImagesType,
+            RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
             return "add-kos";
         }
 
         try {
             Kos kos = convertToKos(request);
-            Kos savedKos = kosService.createKos(kos, images);
+
+            // First save the kos without images to get the ID
+            Kos savedKos = kosService.createKos(kos, new ArrayList<>());
+
+            // Then process and save images with their types
+            List<MultipartFile> images = new ArrayList<>();
+            List<String> types = new ArrayList<>();
+
+            // Add required images
+            addImageWithType(images, types, frontBuilding, frontBuildingType);
+            addImageWithType(images, types, interior, interiorType);
+            addImageWithType(images, types, roomFront, roomFrontType);
+            addImageWithType(images, types, roomInterior, roomInteriorType);
+            addImageWithType(images, types, bathroom, bathroomType);
+
+            // Add optional images
+            if (streetView != null && !streetView.isEmpty()) {
+                addImageWithType(images, types, streetView, streetViewType);
+            }
+
+            if (additionalImages != null && additionalImages.length > 0) {
+                for (MultipartFile image : additionalImages) {
+                    if (!image.isEmpty()) {
+                        addImageWithType(images, types, image, additionalImagesType);
+                    }
+                }
+            }
+
+            // Save all images
+            kosService.saveKosImages(savedKos, images, types);
+
             redirectAttributes.addFlashAttribute("success", "Kos berhasil ditambahkan");
             return "redirect:/kos/detail/" + savedKos.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/kos/add";
+        }
+    }
+
+    private void addImageWithType(List<MultipartFile> images, List<String> types, MultipartFile file, String type) {
+        if (file != null && !file.isEmpty()) {
+            images.add(file);
+            types.add(type);
         }
     }
 

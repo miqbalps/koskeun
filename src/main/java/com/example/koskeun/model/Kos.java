@@ -3,6 +3,7 @@ package com.example.koskeun.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Entity
@@ -54,6 +55,9 @@ public class Kos {
     @ManyToOne
     @JoinColumn(name = "owner_id", insertable = false, updatable = false)
     private User owner;
+
+    @OneToMany(mappedBy = "kos", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<KosImage> images;
 
     public Kos() {
         this.status = "available"; // Default status
@@ -170,5 +174,13 @@ public class Kos {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public List<KosImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<KosImage> images) {
+        this.images = images;
     }
 }

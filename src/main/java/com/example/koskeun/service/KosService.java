@@ -2,7 +2,6 @@ package com.example.koskeun.service;
 
 import com.example.koskeun.model.Kos;
 import com.example.koskeun.model.KosImage;
-import com.example.koskeun.model.User;
 import com.example.koskeun.repository.KosImageRepository;
 import com.example.koskeun.repository.KosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +63,12 @@ public class KosService {
         // Process and save images if any
         if (images != null && !images.isEmpty()) {
             validateImages(images);
-            saveKosImages(savedKos, images);
+            // Create a default list of types (e.g., all "main" or "additional")
+            List<String> types = new ArrayList<>();
+            for (int i = 0; i < images.size(); i++) {
+                types.add(i == 0 ? "main" : "additional"); // First image is "main", others "additional"
+            }
+            saveKosImages(savedKos, images, types);
         }
 
         return savedKos;
@@ -100,7 +105,12 @@ public class KosService {
         // Process and save new images if any
         if (newImages != null && !newImages.isEmpty()) {
             validateImages(newImages);
-            saveKosImages(updatedKos, newImages);
+            // Create a default list of types for new images
+            List<String> types = new ArrayList<>();
+            for (int i = 0; i < newImages.size(); i++) {
+                types.add("additional"); // All new images are "additional"
+            }
+            saveKosImages(updatedKos, newImages, types);
         }
 
         return updatedKos;
@@ -148,11 +158,15 @@ public class KosService {
         kosImageRepository.delete(image);
     }
 
-    private void saveKosImages(Kos kos, List<MultipartFile> images) {
-        boolean hasMainImage = kosImageRepository.findByKosIdAndType(kos.getId(), "main").isEmpty();
+    @Transactional
+    public void saveKosImages(Kos kos, List<MultipartFile> images, List<String> types) {
+        if (images == null || images.isEmpty())
+            return;
 
         for (int i = 0; i < images.size(); i++) {
             MultipartFile image = images.get(i);
+            String type = i < types.size() ? types.get(i) : "additional";
+
             if (!image.isEmpty()) {
                 String newFilename = null;
                 try {
@@ -174,14 +188,7 @@ public class KosService {
                     KosImage kosImage = new KosImage();
                     kosImage.setKosId(kos.getId());
                     kosImage.setUrl(newFilename);
-
-                    // Set first image as main image if no main image exists
-                    if (hasMainImage) {
-                        kosImage.setType("gallery");
-                    } else {
-                        kosImage.setType("main");
-                        hasMainImage = true;
-                    }
+                    kosImage.setType(type); // Set the specific type
 
                     kosImageRepository.save(kosImage);
                 } catch (Exception e) {

@@ -228,59 +228,105 @@
                 <!-- Kos Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
                     <!-- Kos Item 1 -->
-                    <div th:each="kos : ${kosList}" class="kos-card bg-white rounded-xl shadow-md overflow-hidden">
+                    <!-- Kos Card Component -->
+                    <div th:each="kos : ${kosList}" class="kos-card bg-white rounded-xl shadow-md overflow-hidden mb-6">
                         <div class="flex flex-col md:flex-row">
+                            <!-- Image Section -->
                             <div class="md:w-1/3 relative">
-                                <img th:src="${kos.kosImages[0]?.url ?: 'https://placehold.co/300x200'}" alt="Kos Image"
+                                <!-- Main Image -->
+                                <img th:if="${not #lists.isEmpty(kos.images)}"
+                                    th:src="@{'/uploads/kos-images/' + ${kos.images[0].url}}" alt="Kos Image"
                                     class="w-full h-48 md:h-full object-cover">
-                                <div
-                                    class="absolute top-3 left-3 bg-emerald-600 text-white px-2 py-1 rounded text-xs font-medium">
+                                <!-- Placeholder if no image -->
+                                <img th:unless="${not #lists.isEmpty(kos.images)}"
+                                    src="https://placehold.co/300x200?text=No+Image" alt="Kos Placeholder"
+                                    class="w-full h-48 md:h-full object-cover bg-gray-100">
+
+                                <!-- Status Badge -->
+                                <div class="absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium"
+                                    th:classappend="${kos.status == 'available'} ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'">
                                     <span th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}">Tersedia</span>
                                 </div>
+
+                                <!-- Photo Count Badge -->
                                 <div
                                     class="absolute bottom-3 right-3 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
                                     <i class="fas fa-camera mr-1"></i>
-                                    <span th:text="${kos.kosImages.size()} + ' Foto'">5 Foto</span>
+                                    <span
+                                        th:text="${#lists.isEmpty(kos.images)} ? '0 Foto' : ${#lists.size(kos.images)} + ' Foto'">0
+                                        Foto</span>
                                 </div>
                             </div>
-                            <div class="p-6 md:w-2/3">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${kos.name}">Kos Green
-                                            Valley</h3>
-                                        <p class="text-gray-600 mb-3 flex items-center">
-                                            <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
-                                            <span th:text="${kos.address}">Jl. Melati No. 123, Jakarta Selatan</span>
-                                        </p>
+
+                            <!-- Content Section -->
+                            <div class="p-6 md:w-2/3 flex flex-col justify-between">
+                                <div>
+                                    <!-- Title and Rating -->
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-xl font-bold text-gray-900" th:text="${kos.name}">Nama Kos</h3>
+                                        <div
+                                            class="flex items-center bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">
+                                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                            <span class="text-sm font-medium">4.8</span>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-star text-yellow-400"></i>
-                                        <span class="ml-1 font-medium">4.8</span>
+
+                                    <!-- Location -->
+                                    <p class="text-gray-600 mb-3 flex items-center">
+                                        <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
+                                        <span th:text="${kos.address}">Alamat kos</span>
+                                    </p>
+
+                                    <!-- Tags -->
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <!-- Type Badge -->
+                                        <!-- <span class="px-2 py-1 rounded-full text-xs font-medium" th:classappend="${kos.type == 'putra'} ? 'bg-blue-100 text-blue-800' : 
+                                         ${kos.type == 'putri'} ? 'bg-pink-100 text-pink-800' : 
+                                         'bg-purple-100 text-purple-800'" th:text="${kos.type == 'putra'} ? 'Putra' : 
+                                  ${kos.type == 'putri'} ? 'Putri' : 'Campur'">
+                                            Tipe Kos
+                                        </span> -->
+
+                                        <!-- Category Badge -->
+                                        <!-- <span class="px-2 py-1 rounded-full text-xs font-medium" th:classappend="${kos.category == 'ekonomis'} ? 'bg-gray-100 text-gray-800' : 
+                                         ${kos.category == 'standar'} ? 'bg-green-100 text-green-800' : 
+                                         'bg-yellow-100 text-yellow-800'" th:text="${kos.category}">
+                                            Kategori
+                                        </span> -->
+
+                                        <!-- Facilities (example) -->
+                                        <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">AC</span>
+                                        <span
+                                            class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">WiFi</span>
                                     </div>
+
+                                    <!-- Description (truncated) -->
+                                    <p class="text-gray-500 text-sm mb-4 line-clamp-2" th:text="${kos.description}">
+                                        Deskripsi kos akan ditampilkan di sini dengan maksimal dua baris...
+                                    </p>
                                 </div>
 
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs"
-                                        th:text="${kos.type == 'putra' ? 'Putra' : (kos.type == 'putri' ? 'Putri' : 'Campur')}">Putri</span>
-                                    <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs"
-                                        th:text="${kos.category}">Eksklusif</span>
-                                    <span
-                                        class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs">AC</span>
-                                    <span
-                                        class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs">WiFi</span>
-                                </div>
-
+                                <!-- Price and Action Button -->
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <p class="text-emerald-600 font-bold text-lg"
-                                            th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'COMMA', 2, 'POINT')} + '/bulan'">
-                                            Rp 1.800.000/bulan</p>
-                                        <p class="text-sm text-gray-500"
-                                            th:text="'Tersisa ' + ${kos.roomAvailable} + ' kamar'">Tersisa 3 kamar</p>
+                                        <p class="text-emerald-600 font-bold text-lg">
+                                            <span
+                                                th:text="${'Rp ' + #numbers.formatDecimal(kos.priceMonthly, 0, 'COMMA', 2, 'POINT') + '/bulan'}">
+                                                Rp 1.500.000/bulan
+                                            </span>
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            <span th:if="${kos.roomAvailable != null}"
+                                                th:text="${'Tersisa ' + kos.roomAvailable + ' kamar'}">
+                                                Tersisa 3 kamar
+                                            </span>
+                                            <span th:unless="${kos.roomAvailable != null}">-</span>
+                                        </p>
                                     </div>
-                                    <a th:href="@{'/kos/' + ${kos.id}}"
-                                        class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors">
-                                        Lihat Detail
+                                    <a th:href="@{'/kos/detail/' + ${kos.id}}"
+                                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+                                        <span>Lihat Detail</span>
+                                        <i class="fas fa-chevron-right ml-2 text-sm"></i>
                                     </a>
                                 </div>
                             </div>
