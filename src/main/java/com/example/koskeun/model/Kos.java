@@ -3,6 +3,7 @@ package com.example.koskeun.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -31,17 +32,8 @@ public class Kos {
     @Column(length = 50)
     private String category;
 
-    @Column(name = "room_count")
-    private Integer roomCount;
-
-    @Column(name = "room_available")
-    private Integer roomAvailable;
-
     @Column(columnDefinition = "text")
     private String address;
-
-    @Column(columnDefinition = "text")
-    private String city;
 
     @Column(precision = 9, scale = 6)
     private BigDecimal latitude;
@@ -52,6 +44,23 @@ public class Kos {
     @Column(length = 20)
     private String status;
 
+    @Column(name = "admin_id")
+    private Long adminId;
+
+    @Column(columnDefinition = "text")
+    private String approvalNotes;
+
+    @Column(length = 20)
+    private String approvalStatus;
+
+    @Column(name = "approval_reviewed_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date reviewedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id", insertable = false, updatable = false)
+    private User admin;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", insertable = false, updatable = false)
     private User owner;
@@ -61,6 +70,7 @@ public class Kos {
 
     public Kos() {
         this.status = "available"; // Default status
+        this.approvalStatus = "pending"; // Default approval status
     }
 
     // Getters and Setters
@@ -120,22 +130,6 @@ public class Kos {
         this.category = category;
     }
 
-    public Integer getRoomCount() {
-        return roomCount;
-    }
-
-    public void setRoomCount(Integer roomCount) {
-        this.roomCount = roomCount;
-    }
-
-    public Integer getRoomAvailable() {
-        return roomAvailable;
-    }
-
-    public void setRoomAvailable(Integer roomAvailable) {
-        this.roomAvailable = roomAvailable;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -182,5 +176,33 @@ public class Kos {
 
     public void setImages(List<KosImage> images) {
         this.images = images;
+    }
+
+    public User getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(User admin) {
+        this.admin = admin;
+    }
+
+    public String getApprovalNotes() {
+        return approvalNotes;
+    }
+
+    public void setApprovalNotes(String approvalNotes) {
+        this.approvalNotes = approvalNotes;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
+    public Date getReviewedAt() {
+        return reviewedAt;
     }
 }

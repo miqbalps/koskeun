@@ -28,9 +28,9 @@ public class KosController {
 
     @GetMapping("/search")
     public String searchKos(
-            @RequestParam(required = false) String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size,
             Model model) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Kos> kosPage;
@@ -50,7 +50,7 @@ public class KosController {
     }
 
     @GetMapping("/detail/{id}")
-    public String kosDetail(@PathVariable Long id, Model model) {
+    public String kosDetail(@PathVariable("id") Long id, Model model) {
         Kos kos = kosService.getKosById(id);
         List<KosImage> images = kosService.getKosImages(id);
         List<Kos> similarKos = kosService.getAvailableKosByType(kos.getType(), PageRequest.of(0, 2)).getContent();
@@ -64,8 +64,8 @@ public class KosController {
 
     @GetMapping("/my")
     public String myKos(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             Model model) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -102,19 +102,24 @@ public class KosController {
             @RequestParam("roomInteriorType") String roomInteriorType,
             @RequestParam("bathroomType") String bathroomType,
             @RequestParam(value = "additionalImagesType", required = false) String additionalImagesType,
+            Model model,
             RedirectAttributes redirectAttributes) {
 
+        // Validasi form
         if (bindingResult.hasErrors()) {
+            model.addAttribute("error", "Mohon periksa kembali form anda");
+            return "add-kos";
+        }
+
+        // Validasi file wajib
+        if (frontBuilding.isEmpty() || interior.isEmpty() ||
+                roomFront.isEmpty() || roomInterior.isEmpty() ||
+                bathroom.isEmpty()) {
+            model.addAttribute("error", "Foto wajib tidak boleh kosong");
             return "add-kos";
         }
 
         try {
-            Kos kos = convertToKos(request);
-
-            // First save the kos without images to get the ID
-            Kos savedKos = kosService.createKos(kos, new ArrayList<>());
-
-            // Then process and save images with their types
             List<MultipartFile> images = new ArrayList<>();
             List<String> types = new ArrayList<>();
 
@@ -138,14 +143,21 @@ public class KosController {
                 }
             }
 
-            // Save all images
+            // Convert request to entity
+            Kos kos = convertToKos(request);
+
+            // Save kos
+            Kos savedKos = kosService.createKos(kos, new ArrayList<>());
+
+            // Save images
             kosService.saveKosImages(savedKos, images, types);
 
             redirectAttributes.addFlashAttribute("success", "Kos berhasil ditambahkan");
-            return "redirect:/kos/detail/" + savedKos.getId();
+            return "redirect:/kos/my";
+
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/kos/add";
+            model.addAttribute("error", "Gagal menambahkan kos: " + e.getMessage());
+            return "add-kos";
         }
     }
 
@@ -157,7 +169,7 @@ public class KosController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditKosForm(@PathVariable Long id, Model model) {
+    public String showEditKosForm(@PathVariable("id") Long id, Model model) {
         Kos kos = kosService.getKosById(id);
         List<KosImage> images = kosService.getKosImages(id);
 
@@ -169,7 +181,7 @@ public class KosController {
 
     @PostMapping("/edit/{id}")
     public String editKos(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @ModelAttribute("kos") KosRequest request,
             BindingResult bindingResult,
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
@@ -190,7 +202,7 @@ public class KosController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteKos(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteKos(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             kosService.deleteKos(id);
             redirectAttributes.addFlashAttribute("success", "Kos berhasil dihapus");
@@ -203,7 +215,7 @@ public class KosController {
 
     @PostMapping("/{kosId}/images/{imageId}/delete")
     @ResponseBody
-    public ResponseEntity<?> deleteKosImage(@PathVariable Long kosId, @PathVariable Long imageId) {
+    public ResponseEntity<?> deleteKosImage(@PathVariable("kosId") Long kosId, @PathVariable("imageId") Long imageId) {
         try {
             kosService.deleteKosImage(kosId, imageId);
             return ResponseEntity.ok().build();
@@ -214,9 +226,9 @@ public class KosController {
 
     @GetMapping("/type/{type}")
     public String getKosByType(
-            @PathVariable String type,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
+            @PathVariable("type") String type,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size,
             Model model) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -237,8 +249,6 @@ public class KosController {
         kos.setDescription(request.getDescription());
         kos.setType(request.getType());
         kos.setCategory(request.getCategory());
-        kos.setRoomCount(request.getRoomCount());
-        kos.setRoomAvailable(request.getRoomAvailable());
         kos.setAddress(request.getAddress());
         kos.setLatitude(request.getLatitude());
         kos.setLongitude(request.getLongitude());
@@ -253,8 +263,6 @@ public class KosController {
         request.setDescription(kos.getDescription());
         request.setType(kos.getType());
         request.setCategory(kos.getCategory());
-        request.setRoomCount(kos.getRoomCount());
-        request.setRoomAvailable(kos.getRoomAvailable());
         request.setAddress(kos.getAddress());
         request.setLatitude(kos.getLatitude());
         request.setLongitude(kos.getLongitude());

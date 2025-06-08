@@ -55,7 +55,8 @@ public class KosService {
         validateKosData(kos);
 
         kos.setOwnerId(currentUser.getId());
-        kos.setStatus("available"); // Default status
+        kos.setStatus("available");
+        kos.setApprovalStatus("pending"); // Default status
 
         // Save the kos first to get the ID
         Kos savedKos = kosRepository.save(kos);
@@ -92,8 +93,6 @@ public class KosService {
         existingKos.setDescription(kos.getDescription());
         existingKos.setType(kos.getType());
         existingKos.setCategory(kos.getCategory());
-        existingKos.setRoomCount(kos.getRoomCount());
-        existingKos.setRoomAvailable(kos.getRoomAvailable());
         existingKos.setAddress(kos.getAddress());
         existingKos.setLatitude(kos.getLatitude());
         existingKos.setLongitude(kos.getLongitude());

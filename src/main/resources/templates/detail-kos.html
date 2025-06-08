@@ -36,9 +36,9 @@
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50" sec:authorize="hasRole('ROLE_PENCARI')">
     <!-- Navbar -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
+    <nav class=" bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center space-x-2">
@@ -56,7 +56,7 @@
                     <a href="#" class="text-gray-600 hover:text-emerald-600 transition-colors font-medium">Cari Kos</a>
                     <a href="#" class="text-gray-600 hover:text-emerald-600 transition-colors font-medium">Tentang</a>
                     <a th:href="@{/login}"
-                        class="btn-primary text-white px-5 py-2 rounded-lg font-medium transition-all shadow-md hover:shadow-emerald-200">
+                        class="btn-primary bg-green-600 text-white px-5 py-2 rounded-lg font-medium transition-all shadow-md hover:shadow-emerald-200">
                         Masuk/Daftar
                     </a>
                 </div>
@@ -71,20 +71,21 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Breadcrumb -->
         <div class="flex items-center text-sm text-gray-600 mb-6">
-            <a href="#" class="hover:text-emerald-600">Beranda</a>
+            <a href="#" class="hover:text-emerald-600">Kos Saya</a>
             <span class="mx-2">/</span>
-            <a href="#" class="hover:text-emerald-600">Jakarta</a>
-            <span class="mx-2">/</span>
-            <span class="text-emerald-600">Kos Green Valley</span>
+            <!-- <a href="#" class="hover:text-emerald-600">Jakarta</a>
+                        <span class="mx-2">/</span> -->
+            <span class="text-emerald-600" th:text="${kos.name}">Kos Green Valley</span>
         </div>
 
         <!-- Property Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8">
-            <div>
+            <div class="max-w-3xl">
                 <h1 class="text-3xl font-bold text-gray-900" th:text="${kos.name}">Kos Green Valley</h1>
                 <div class="flex items-center mt-2">
                     <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
-                    <span class="text-gray-600" th:text="${kos.address}">Jl. Melati No. 123, Jakarta Selatan</span>
+                    <span class="text-gray-600 line-clamp-1" th:text="${kos.address}">Jl. Melati No. 123, Jakarta
+                        Selatan</span>
                 </div>
             </div>
             <div class="mt-4 md:mt-0 flex items-center">
@@ -108,18 +109,73 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Gallery -->
             <div class="lg:col-span-2">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2">
-                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Main Image -->
+                    <div>
+                        <img th:if="${not #lists.isEmpty(kos.images)}"
+                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[0].url})}"
                             alt="Kos Main Image" class="w-full h-80 md:h-96 rounded-xl object-cover gallery-image">
                     </div>
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                            alt="Kos Image 2" class="w-full h-48 rounded-xl object-cover gallery-image">
-                    </div>
-                    <div>
-                        <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80"
-                            alt="Kos Image 3" class="w-full h-48 rounded-xl object-cover gallery-image">
+
+                    <!-- Image Carousel -->
+                    <div class="relative">
+                        <!-- Carousel Container -->
+                        <div class="overflow-hidden relative">
+                            <div class="carousel-slides flex transition-transform duration-500 ease-in-out">
+                                <!-- Slide 1 -->
+                                <div class="carousel-slide flex-none w-full grid grid-cols-3 gap-4">
+                                    <div>
+                                        <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 1}"
+                                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[1].url})}"
+                                            alt="Kos Image" class="w-full h-48 rounded-xl object-cover gallery-image">
+                                    </div>
+                                    <div>
+                                        <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 2}"
+                                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[2].url})}"
+                                            alt="Kos Image" class="w-full h-48 rounded-xl object-cover gallery-image">
+                                    </div>
+                                    <div>
+                                        <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 3}"
+                                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[3].url})}"
+                                            alt="Kos Image" class="w-full h-48 rounded-xl object-cover gallery-image">
+                                    </div>
+                                </div>
+                                <!-- Slide 2 -->
+                                <div class="carousel-slide flex-none w-full grid grid-cols-3 gap-4">
+                                    <div>
+                                        <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 4}"
+                                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[4].url})}"
+                                            alt="Kos Image" class="w-full h-48 rounded-xl object-cover gallery-image">
+                                    </div>
+                                    <div>
+                                        <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 5}"
+                                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[5].url})}"
+                                            alt="Kos Image" class="w-full h-48 rounded-xl object-cover gallery-image">
+                                    </div>
+                                    <div>
+                                        <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 6}"
+                                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[6].url})}"
+                                            alt="Kos Image" class="w-full h-48 rounded-xl object-cover gallery-image">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Carousel Navigation Buttons -->
+                            <button
+                                class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100">
+                                <i class="fas fa-chevron-left text-gray-600"></i>
+                            </button>
+                            <button
+                                class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100">
+                                <i class="fas fa-chevron-right text-gray-600"></i>
+                            </button>
+                        </div>
+
+                        <!-- Carousel Indicators -->
+                        <div class="flex justify-center mt-4 space-x-2">
+                            <button class="carousel-dot w-2 h-2 rounded-full bg-gray-300 hover:bg-emerald-600"></button>
+                            <button class="carousel-dot w-2 h-2 rounded-full bg-gray-300 hover:bg-emerald-600"></button>
+                        </div>
                     </div>
                 </div>
 
@@ -127,134 +183,97 @@
                 <div class="mt-8 bg-white rounded-xl shadow-md p-6">
                     <h2 class="text-xl font-bold text-gray-900 mb-4">Deskripsi Kos</h2>
                     <p class="text-gray-600 mb-6" th:text="${kos.description}">
-                        Kos Green Valley merupakan kos eksklusif dengan fasilitas lengkap di kawasan strategis Jakarta
+                        Kos Green Valley merupakan kos eksklusif dengan fasilitas lengkap di kawasan
+                        strategis Jakarta
                         Selatan.
-                        Dekat dengan kampus dan pusat perbelanjaan. Kamar dilengkapi AC, kamar mandi dalam, dan WiFi
+                        Dekat dengan kampus dan pusat perbelanjaan. Kamar dilengkapi AC, kamar mandi
+                        dalam, dan WiFi
                         cepat.
                         Lingkungan yang nyaman dan aman dengan security 24 jam.
                     </p>
 
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Fasilitas</h2>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-wifi mr-2"></i>
-                            <span>WiFi</span>
-                        </div>
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-snowflake mr-2"></i>
-                            <span>AC</span>
-                        </div>
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-car mr-2"></i>
-                            <span>Parkir Mobil</span>
-                        </div>
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-motorcycle mr-2"></i>
-                            <span>Parkir Motor</span>
-                        </div>
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-utensils mr-2"></i>
-                            <span>Dapur Bersama</span>
-                        </div>
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-tv mr-2"></i>
-                            <span>TV Ruang Tamu</span>
-                        </div>
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-water mr-2"></i>
-                            <span>Air Hangat</span>
-                        </div>
-                        <div
-                            class="facility-badge bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-shield-alt mr-2"></i>
-                            <span>Keamanan 24 Jam</span>
-                        </div>
-                    </div>
-
                     <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Lokasi</h2>
+                    <p class="text-gray-600" th:text="${kos.address}">Jl. Melati No. 123, Jakarta
+                        Selatan</p>
                     <div class="rounded-xl overflow-hidden h-64 mb-4">
                         <!-- Map Embed -->
                         <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0"
-                            marginwidth="0" src="https://maps.google.com/maps?q=-6.229728,106.689431&z=15&output=embed"
+                            marginwidth="0"
+                            th:src="'https://maps.google.com/maps?q='+${kos.latitude}+','+ ${kos.longitude} + '&z=15&output=embed'"
                             class="border-0">
                         </iframe>
                     </div>
                     <div class="flex items-center text-gray-600">
                         <i class="fas fa-info-circle text-emerald-600 mr-2"></i>
-                        <span th:text="'Lat: ' + ${kos.latitude} + ', Long: ' + ${kos.longitude}">Lat: -6.229728, Long:
+                        <span th:text="'Lat: ' + ${kos.latitude} + ', Long: ' + ${kos.longitude}">Lat:
+                            -6.229728, Long:
                             106.689431</span>
                     </div>
                 </div>
 
                 <!-- Reviews Section -->
-                <div class="mt-8 bg-white rounded-xl shadow-md p-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Ulasan (124)</h2>
+                <!-- <div class="mt-8 bg-white rounded-xl shadow-md p-6">
+                                <h2 class="text-xl font-bold text-gray-900 mb-6">Ulasan (124)</h2>
 
-                    <div class="space-y-6">
-                        <!-- Review 1 -->
-                        <div class="border-b border-gray-100 pb-6">
-                            <div class="flex items-center mb-3">
-                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User"
-                                    class="w-10 h-10 rounded-full mr-3">
-                                <div>
-                                    <h4 class="font-medium">Sarah Wijaya</h4>
-                                    <div class="flex items-center">
-                                        <div class="flex mr-2">
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <div class="space-y-6">
+                                    <div class="border-b border-gray-100 pb-6">
+                                        <div class="flex items-center mb-3">
+                                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User"
+                                                class="w-10 h-10 rounded-full mr-3">
+                                            <div>
+                                                <h4 class="font-medium">Sarah Wijaya</h4>
+                                                <div class="flex items-center">
+                                                    <div class="flex mr-2">
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                    </div>
+                                                    <span class="text-gray-500 text-sm">2 minggu lalu</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <span class="text-gray-500 text-sm">2 minggu lalu</span>
+                                        <p class="text-gray-600">
+                                            Kosnya sangat nyaman dan bersih. Lokasi strategis dekat kampus dan mall.
+                                            Pemiliknya
+                                            ramah dan responsif. Fasilitas lengkap sesuai iklan.
+                                        </p>
+                                    </div>
+
+                                    <div class="border-b border-gray-100 pb-6">
+                                        <div class="flex items-center mb-3">
+                                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User"
+                                                class="w-10 h-10 rounded-full mr-3">
+                                            <div>
+                                                <h4 class="font-medium">Budi Santoso</h4>
+                                                <div class="flex items-center">
+                                                    <div class="flex mr-2">
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                    </div>
+                                                    <span class="text-gray-500 text-sm">1 bulan lalu</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-600">
+                                            Tinggal disini sudah 6 bulan, sangat puas. Air lancar, listrik stabil,
+                                            WiFi cepat. Ada
+                                            cleaning service seminggu 2x. Recommended!
+                                        </p>
                                     </div>
                                 </div>
-                            </div>
-                            <p class="text-gray-600">
-                                Kosnya sangat nyaman dan bersih. Lokasi strategis dekat kampus dan mall. Pemiliknya
-                                ramah dan responsif. Fasilitas lengkap sesuai iklan.
-                            </p>
-                        </div>
 
-                        <!-- Review 2 -->
-                        <div class="border-b border-gray-100 pb-6">
-                            <div class="flex items-center mb-3">
-                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User"
-                                    class="w-10 h-10 rounded-full mr-3">
-                                <div>
-                                    <h4 class="font-medium">Budi Santoso</h4>
-                                    <div class="flex items-center">
-                                        <div class="flex mr-2">
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                            <i class="fas fa-star text-yellow-400 text-sm"></i>
-                                        </div>
-                                        <span class="text-gray-500 text-sm">1 bulan lalu</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-gray-600">
-                                Tinggal disini sudah 6 bulan, sangat puas. Air lancar, listrik stabil, WiFi cepat. Ada
-                                cleaning service seminggu 2x. Recommended!
-                            </p>
-                        </div>
-                    </div>
-
-                    <button
-                        class="mt-6 w-full py-3 border border-emerald-600 text-emerald-600 rounded-lg font-medium hover:bg-emerald-50 transition-colors">
-                        Lihat Semua Ulasan
-                    </button>
-                </div>
+                                <button
+                                    class="mt-6 w-full py-3 border border-emerald-600 text-emerald-600 rounded-lg font-medium hover:bg-emerald-50 transition-colors">
+                                    Lihat Semua Ulasan
+                                </button>
+                            </div> -->
             </div>
+
 
             <!-- Booking Card -->
             <div class="sticky top-24 h-fit">
@@ -268,12 +287,9 @@
                     </div>
 
                     <div class="mb-6">
-                        <p class="text-3xl font-bold text-emerald-600 mb-1"
+                        <p class="text-2xl font-bold text-emerald-600 mb-1"
                             th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'COMMA', 2, 'POINT')} + '/bulan'">
                             Rp 1.800.000/bulan</p>
-                        <p class="text-gray-500"
-                            th:text="'Kamar tersedia: ' + ${kos.roomAvailable} + ' dari ' + ${kos.roomCount}">Kamar
-                            tersedia: 5 dari 10</p>
                     </div>
 
                     <div class="space-y-4 mb-6">
@@ -282,23 +298,23 @@
                             <span class="font-medium" th:text="${kos.type}">Putri</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Kategori</span>
+                            <span class="text-gray-600">Jenis</span>
                             <span class="font-medium" th:text="${kos.category}">Eksklusif</span>
                         </div>
-                        <div class="flex justify-between">
+                        <!-- <div class="flex justify-between">
                             <span class="text-gray-600">Luas Kamar</span>
                             <span class="font-medium">3x4 m²</span>
-                        </div>
+                        </div> -->
                     </div>
 
-                    <button
+                    <button id="open-modal-button"
                         class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity mb-4">
-                        Pesan Sekarang
+                        Sewa Sekarang
                     </button>
 
                     <button
                         class="w-full border border-emerald-600 text-emerald-600 py-3 rounded-lg font-medium hover:bg-emerald-50 transition-colors">
-                        Hubungi Pemilik
+                        Booking
                     </button>
 
                     <div class="mt-6 p-4 bg-gray-50 rounded-lg">
@@ -306,56 +322,167 @@
                             <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Owner"
                                 class="w-12 h-12 rounded-full mr-3">
                             <div>
-                                <h4 class="font-medium">Ibu Siti</h4>
+                                <h4 class="font-medium" th:text="${kos.owner.fullName}">Ibu Siti</h4>
                                 <p class="text-sm text-gray-600">Pemilik Kos</p>
                             </div>
                         </div>
                         <div class="mt-3 flex items-center text-sm">
                             <i class="fas fa-phone-alt text-emerald-600 mr-2"></i>
-                            <span>0812-3456-7890</span>
+                            <span th:text="${kos.owner.phoneNumber}">0812-3456-7890</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Similar Kos -->
-                <div class="mt-6 bg-white rounded-xl shadow-md p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Kos Serupa</h3>
+                <!-- <div class="mt-6 bg-white rounded-xl shadow-md p-6">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">Kos Serupa</h3>
 
-                    <div class="space-y-4">
-                        <!-- Similar Kos 1 -->
-                        <div class="flex">
-                            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                                alt="Similar Kos" class="w-16 h-16 rounded-lg object-cover">
-                            <div class="ml-3">
-                                <h4 class="font-medium text-gray-900">Kos Mawar Indah</h4>
-                                <div class="flex items-center text-sm">
-                                    <i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i>
-                                    <span class="text-gray-600">Jakarta Selatan</span>
-                                </div>
-                                <p class="text-emerald-600 font-bold text-sm">Rp 1.500.000/bulan</p>
-                            </div>
-                        </div>
+                                <div class="space-y-4">
+                                    <div class="flex">
+                                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                            alt="Similar Kos" class="w-16 h-16 rounded-lg object-cover">
+                                        <div class="ml-3">
+                                            <h4 class="font-medium text-gray-900">Kos Mawar Indah</h4>
+                                            <div class="flex items-center text-sm">
+                                                <i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i>
+                                                <span class="text-gray-600">Jakarta Selatan</span>
+                                            </div>
+                                            <p class="text-emerald-600 font-bold text-sm">Rp 1.500.000/bulan</p>
+                                        </div>
+                                    </div>
 
-                        <!-- Similar Kos 2 -->
-                        <div class="flex">
-                            <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80"
-                                alt="Similar Kos" class="w-16 h-16 rounded-lg object-cover">
-                            <div class="ml-3">
-                                <h4 class="font-medium text-gray-900">Kos Sejahtera</h4>
-                                <div class="flex items-center text-sm">
-                                    <i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i>
-                                    <span class="text-gray-600">Jakarta Pusat</span>
+                                    <div class="flex">
+                                        <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80"
+                                            alt="Similar Kos" class="w-16 h-16 rounded-lg object-cover">
+                                        <div class="ml-3">
+                                            <h4 class="font-medium text-gray-900">Kos Sejahtera</h4>
+                                            <div class="flex items-center text-sm">
+                                                <i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i>
+                                                <span class="text-gray-600">Jakarta Pusat</span>
+                                            </div>
+                                            <p class="text-emerald-600 font-bold text-sm">Rp 1.200.000/bulan</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="text-emerald-600 font-bold text-sm">Rp 1.200.000/bulan</p>
-                            </div>
+
+                                <a href="#"
+                                    class="mt-4 inline-block text-emerald-600 hover:text-emerald-800 text-sm font-medium">
+                                    Lihat lebih banyak <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div> -->
+            </div>
+        </div>
+    </div>
+
+    <div id="payment-modal"
+        class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 transform transition-all" id="modal-content">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Formulir Pembayaran Sewa</h2>
+                <button id="close-modal-button" class="text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+
+            <div class="mb-6 bg-gray-50 rounded-lg p-4">
+                <h4 class="text-lg font-semibold text-gray-900 mb-4">Informasi Penyewa</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-user text-emerald-600"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Nama Lengkap</p>
+                            <p class="text-gray-700 font-medium" th:text="${#authentication.principal.fullName}">John
+                                Doe</p>
                         </div>
                     </div>
-
-                    <a href="#" class="mt-4 inline-block text-emerald-600 hover:text-emerald-800 text-sm font-medium">
-                        Lihat lebih banyak <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-envelope text-emerald-600"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Email</p>
+                            <p class="text-gray-700 font-medium" th:text="${#authentication.principal.email}">
+                                johndoe@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-phone text-emerald-600"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Telepon</p>
+                            <p class="text-gray-700 font-medium" th:text="${#authentication.principal.phoneNumber}">
+                                0812-3456-7890</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-venus-mars text-emerald-600"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Jenis Kelamin</p>
+                            <p class="text-gray-700 font-medium" th:text="${#authentication.principal.gender}">Laki-laki
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-briefcase text-emerald-600"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Pekerjaan</p>
+                            <p class="text-gray-700 font-medium" th:text="${#authentication.principal.occupation}">
+                                Mahasiswa</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-building text-emerald-600"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Institusi</p>
+                            <p class="text-gray-700 font-medium" th:text="${#authentication.principal.institutionName}">
+                                Itenas</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <form th:action="@{'/transactions/rent/' + ${kos.id}}" method="POST" enctype="multipart/form-data">
+
+                <div class="mb-4">
+                    <label for="paymentType" class="block text-sm font-medium text-gray-700 mb-1">Jenis
+                        Pembayaran</label>
+                    <select id="paymentType" name="paymentType"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        <option value="tunai">Tunai</option>
+                        <option value="transfer">Transfer</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="remainingPayment" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Pembayaran
+                        (Rp)</label>
+                    <input type="number" id="remainingPayment" name="remainingPayment" placeholder="Contoh: 500000"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
+                        required>
+                    <p class="text-xs text-gray-500 mt-1">Total harga sewa:
+                        <span
+                            th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'POINT', 0, 'COMMA')}"></span>
+                    </p>
+                </div>
+
+                <div class="mb-6">
+                    <label for="rpProofUrl" class="block text-sm font-medium text-gray-700 mb-1">Upload Bukti
+                        Pembayaran</label>
+                    <input type="file" id="rpProofUrl" name="rpProofUrl"
+                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                        accept="image/png, image/jpeg, image/jpg" required>
+
+                    <div class="mt-4">
+                        <img id="image-preview" src="" alt="Pratinjau Gambar"
+                            class="w-full h-auto rounded-lg hidden max-h-64 object-contain" />
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancel-modal-button"
+                        class="px-6 py-2 rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-6 py-2 rounded-lg text-white bg-emerald-600 hover:bg-emerald-700">
+                        Kirim
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -428,47 +555,563 @@
             </div>
         </div>
     </footer>
+</body>
 
-    <script>
-        // Back to Top Button
-        const backToTopButton = document.createElement('button');
-        backToTopButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
-        backToTopButton.className = 'fixed bottom-8 right-8 bg-emerald-600 text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all';
-        backToTopButton.id = 'backToTop';
-        document.body.appendChild(backToTopButton);
+<body class="bg-gray-50" sec:authorize="hasRole('ROLE_PEMILIK')">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-white shadow-md fixed h-full">
+            <div class="p-4 flex items-center space-x-2 border-b border-gray-200 h-16">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path
+                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                </svg>
+                <h1
+                    class="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    KosKeun</h1>
+            </div>
 
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.remove('opacity-0', 'invisible');
-                backToTopButton.classList.add('opacity-100', 'visible');
-            } else {
-                backToTopButton.classList.remove('opacity-100', 'visible');
-                backToTopButton.classList.add('opacity-0', 'invisible');
+            <div class="p-4">
+                <!-- User Profile -->
+                <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
+                    <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                    <div>
+                        <p class="font-medium text-gray-900" th:text="${#authentication.principal.fullName}">John Doe
+                        </p>
+                        <p class="text-xs text-gray-500" th:text="${#authentication.principal.roleName}">Pemilik Kos
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Menu Items -->
+                <nav class="space-y-1">
+                    <a href="/dashboard" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-tachometer-alt text-emerald-600 w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                        class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-home text-emerald-600 w-5"></i>
+                        <span>Kos Saya</span>
+                    </a>
+
+                    <a href="/kos/search" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-search text-emerald-600 w-5"></i>
+                        <span>Cari Kos</span>
+                    </a>
+
+                    <a href="/profile" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-user text-emerald-600 w-5"></i>
+                        <span>Profil Saya</span>
+                    </a>
+
+                    <a href="/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
+                        <span>Pesanan Saya</span>
+                    </a>
+
+                    <a href="/transactions" sec:authorize="hasRole('ROLE_PEMILIK')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-money-bill-wave text-emerald-600 w-5"></i>
+                        <span>Transaksi</span>
+                    </a>
+
+                    <form th:action="@{/auth/logout}" method="POST" class="m-0">
+                        <button type="submit"
+                            class="sidebar-item w-full flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-red-600">
+                            <i class="fas fa-sign-out-alt text-red-500 w-5"></i>
+                            <span>Keluar</span>
+                        </button>
+                    </form>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64">
+            <!-- Top Bar -->
+            <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
+                style="width: calc(100% - 16rem)">
+                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <main class="p-6 mt-16">
+                <!-- Main Content -->
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <!-- Breadcrumb -->
+                    <div class="flex items-center text-sm text-gray-600 mb-6">
+                        <a href="#" class="hover:text-emerald-600">Kos Saya</a>
+                        <span class="mx-2">/</span>
+                        <!-- <a href="#" class="hover:text-emerald-600">Jakarta</a>
+                        <span class="mx-2">/</span> -->
+                        <span class="text-emerald-600" th:text="${kos.name}">Kos Green Valley</span>
+                    </div>
+
+                    <!-- Property Header -->
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8">
+                        <div class="max-w-3xl">
+                            <h1 class="text-3xl font-bold text-gray-900" th:text="${kos.name}">Kos Green Valley</h1>
+                            <div class="flex items-center mt-2">
+                                <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
+                                <span class="text-gray-600" th:text="${kos.address}">Jl. Melati No. 123, Jakarta
+                                    Selatan</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex items-center">
+                            <div class="flex items-center mr-4">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <span class="ml-1 font-medium">4.8</span>
+                                <span class="text-gray-500 ml-1">(124 reviews)</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gallery and Main Info -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Gallery -->
+                        <div class="lg:col-span-2">
+                            <div class="grid grid-cols-1 gap-4">
+                                <!-- Main Image -->
+                                <div>
+                                    <img th:if="${not #lists.isEmpty(kos.images)}"
+                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[0].url})}"
+                                        alt="Kos Main Image"
+                                        class="w-full h-80 md:h-96 rounded-xl object-cover gallery-image">
+                                </div>
+
+                                <!-- Image Carousel -->
+                                <div class="relative">
+                                    <!-- Carousel Container -->
+                                    <div class="overflow-hidden relative">
+                                        <div class="carousel-slides flex transition-transform duration-500 ease-in-out">
+                                            <!-- Slide 1 -->
+                                            <div class="carousel-slide flex-none w-full grid grid-cols-3 gap-4">
+                                                <div>
+                                                    <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 1}"
+                                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[1].url})}"
+                                                        alt="Kos Image"
+                                                        class="w-full h-48 rounded-xl object-cover gallery-image">
+                                                </div>
+                                                <div>
+                                                    <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 2}"
+                                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[2].url})}"
+                                                        alt="Kos Image"
+                                                        class="w-full h-48 rounded-xl object-cover gallery-image">
+                                                </div>
+                                                <div>
+                                                    <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 3}"
+                                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[3].url})}"
+                                                        alt="Kos Image"
+                                                        class="w-full h-48 rounded-xl object-cover gallery-image">
+                                                </div>
+                                            </div>
+                                            <!-- Slide 2 -->
+                                            <div class="carousel-slide flex-none w-full grid grid-cols-3 gap-4">
+                                                <div>
+                                                    <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 4}"
+                                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[4].url})}"
+                                                        alt="Kos Image"
+                                                        class="w-full h-48 rounded-xl object-cover gallery-image">
+                                                </div>
+                                                <div>
+                                                    <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 5}"
+                                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[5].url})}"
+                                                        alt="Kos Image"
+                                                        class="w-full h-48 rounded-xl object-cover gallery-image">
+                                                </div>
+                                                <div>
+                                                    <img th:if="${not #lists.isEmpty(kos.images) and #lists.size(kos.images) > 6}"
+                                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[6].url})}"
+                                                        alt="Kos Image"
+                                                        class="w-full h-48 rounded-xl object-cover gallery-image">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Carousel Navigation Buttons -->
+                                        <button
+                                            class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100">
+                                            <i class="fas fa-chevron-left text-gray-600"></i>
+                                        </button>
+                                        <button
+                                            class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100">
+                                            <i class="fas fa-chevron-right text-gray-600"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Carousel Indicators -->
+                                    <div class="flex justify-center mt-4 space-x-2">
+                                        <button
+                                            class="carousel-dot w-2 h-2 rounded-full bg-gray-300 hover:bg-emerald-600"></button>
+                                        <button
+                                            class="carousel-dot w-2 h-2 rounded-full bg-gray-300 hover:bg-emerald-600"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Property Details -->
+                            <div class="mt-8 bg-white rounded-xl shadow-md p-6">
+                                <h2 class="text-xl font-bold text-gray-900 mb-4">Deskripsi Kos</h2>
+                                <p class="text-gray-600 mb-6" th:text="${kos.description}">
+                                    Kos Green Valley merupakan kos eksklusif dengan fasilitas lengkap di kawasan
+                                    strategis Jakarta
+                                    Selatan.
+                                    Dekat dengan kampus dan pusat perbelanjaan. Kamar dilengkapi AC, kamar mandi
+                                    dalam, dan WiFi
+                                    cepat.
+                                    Lingkungan yang nyaman dan aman dengan security 24 jam.
+                                </p>
+
+                                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Lokasi</h2>
+                                <p class="text-gray-600" th:text="${kos.address}">Jl. Melati No. 123, Jakarta
+                                    Selatan</p>
+                                <div class="rounded-xl overflow-hidden h-64 mb-4">
+                                    <!-- Map Embed -->
+                                    <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0"
+                                        marginwidth="0"
+                                        th:src="'https://maps.google.com/maps?q='+${kos.latitude}+','+ ${kos.longitude} + '&z=15&output=embed'"
+                                        class="border-0">
+                                    </iframe>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <i class="fas fa-info-circle text-emerald-600 mr-2"></i>
+                                    <span th:text="'Lat: ' + ${kos.latitude} + ', Long: ' + ${kos.longitude}">Lat:
+                                        -6.229728, Long:
+                                        106.689431</span>
+                                </div>
+                            </div>
+
+                            <!-- Reviews Section -->
+                            <!-- <div class="mt-8 bg-white rounded-xl shadow-md p-6">
+                                <h2 class="text-xl font-bold text-gray-900 mb-6">Ulasan (124)</h2>
+
+                                <div class="space-y-6">
+                                    <div class="border-b border-gray-100 pb-6">
+                                        <div class="flex items-center mb-3">
+                                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User"
+                                                class="w-10 h-10 rounded-full mr-3">
+                                            <div>
+                                                <h4 class="font-medium">Sarah Wijaya</h4>
+                                                <div class="flex items-center">
+                                                    <div class="flex mr-2">
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                    </div>
+                                                    <span class="text-gray-500 text-sm">2 minggu lalu</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-600">
+                                            Kosnya sangat nyaman dan bersih. Lokasi strategis dekat kampus dan mall.
+                                            Pemiliknya
+                                            ramah dan responsif. Fasilitas lengkap sesuai iklan.
+                                        </p>
+                                    </div>
+
+                                    <div class="border-b border-gray-100 pb-6">
+                                        <div class="flex items-center mb-3">
+                                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User"
+                                                class="w-10 h-10 rounded-full mr-3">
+                                            <div>
+                                                <h4 class="font-medium">Budi Santoso</h4>
+                                                <div class="flex items-center">
+                                                    <div class="flex mr-2">
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                    </div>
+                                                    <span class="text-gray-500 text-sm">1 bulan lalu</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-600">
+                                            Tinggal disini sudah 6 bulan, sangat puas. Air lancar, listrik stabil,
+                                            WiFi cepat. Ada
+                                            cleaning service seminggu 2x. Recommended!
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button
+                                    class="mt-6 w-full py-3 border border-emerald-600 text-emerald-600 rounded-lg font-medium hover:bg-emerald-50 transition-colors">
+                                    Lihat Semua Ulasan
+                                </button>
+                            </div> -->
+                        </div>
+
+
+                        <!-- Booking Card -->
+                        <div class="sticky top-24 h-fit">
+                            <div class="bg-white rounded-xl booking-card p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-xl font-bold text-gray-900">Harga Sewa</h3>
+                                    <span
+                                        class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium"
+                                        th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}">
+                                        Tersedia
+                                    </span>
+                                </div>
+
+                                <div class="mb-6">
+                                    <p class="text-2xl font-bold text-emerald-600 mb-1"
+                                        th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'COMMA', 2, 'POINT')} + '/bulan'">
+                                        Rp 1.800.000/bulan</p>
+                                </div>
+
+                                <div class="space-y-4 mb-6">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Tipe Kos</span>
+                                        <span class="font-medium" th:text="${kos.type}">Putri</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Jenis</span>
+                                        <span class="font-medium" th:text="${kos.category}">Eksklusif</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Luas Kamar</span>
+                                        <span class="font-medium">3x4 m²</span>
+                                    </div>
+                                </div>
+
+                                <button id="open-modal-button"
+                                    class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity mb-4">
+                                    Sewa Sekarang
+                                </button>
+
+                                <button
+                                    class="w-full border border-emerald-600 text-emerald-600 py-3 rounded-lg font-medium hover:bg-emerald-50 transition-colors">
+                                    Booking
+                                </button>
+
+                                <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Owner"
+                                            class="w-12 h-12 rounded-full mr-3">
+                                        <div>
+                                            <h4 class="font-medium" th:text="${kos.owner.fullName}">Ibu Siti</h4>
+                                            <p class="text-sm text-gray-600">Pemilik Kos</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 flex items-center text-sm">
+                                        <i class="fas fa-phone-alt text-emerald-600 mr-2"></i>
+                                        <span th:text="${kos.owner.phoneNumber}">0812-3456-7890</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Similar Kos -->
+                            <!-- <div class="mt-6 bg-white rounded-xl shadow-md p-6">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">Kos Serupa</h3>
+
+                                <div class="space-y-4">
+                                    <div class="flex">
+                                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                            alt="Similar Kos" class="w-16 h-16 rounded-lg object-cover">
+                                        <div class="ml-3">
+                                            <h4 class="font-medium text-gray-900">Kos Mawar Indah</h4>
+                                            <div class="flex items-center text-sm">
+                                                <i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i>
+                                                <span class="text-gray-600">Jakarta Selatan</span>
+                                            </div>
+                                            <p class="text-emerald-600 font-bold text-sm">Rp 1.500.000/bulan</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex">
+                                        <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80"
+                                            alt="Similar Kos" class="w-16 h-16 rounded-lg object-cover">
+                                        <div class="ml-3">
+                                            <h4 class="font-medium text-gray-900">Kos Sejahtera</h4>
+                                            <div class="flex items-center text-sm">
+                                                <i class="fas fa-map-marker-alt text-emerald-600 mr-1"></i>
+                                                <span class="text-gray-600">Jakarta Pusat</span>
+                                            </div>
+                                            <p class="text-emerald-600 font-bold text-sm">Rp 1.200.000/bulan</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="#"
+                                    class="mt-4 inline-block text-emerald-600 hover:text-emerald-800 text-sm font-medium">
+                                    Lihat lebih banyak <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+</body>
+
+<script>
+    // Carousel functionality
+    const carousel = document.querySelector('.carousel-slides');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    const dots = document.querySelectorAll('.carousel-dot');
+    let currentSlide = 0;
+
+    function updateCarousel() {
+        carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('bg-emerald-600', index === currentSlide);
+            dot.classList.toggle('bg-gray-300', index !== currentSlide);
+        });
+    }
+
+    prevBtn.addEventListener('click', () => {
+        currentSlide = Math.max(currentSlide - 1, 0);
+        updateCarousel();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        currentSlide = Math.min(currentSlide + 1, slides.length - 1);
+        updateCarousel();
+    });
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide = index;
+            updateCarousel();
+        });
+    });
+
+    // Initialize carousel
+    updateCarousel();
+</script>
+
+<script>
+    // Mobile sidebar toggle functionality can be added here
+    // For example:
+    document.getElementById('sidebarToggle').addEventListener('click', function () {
+        document.querySelector('.sidebar').classList.toggle('hidden');
+    });
+
+    // Set active sidebar item based on current page
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        const link = item.getAttribute('href');
+        if (currentPath.includes(link)) {
+            item.classList.add('active');
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('payment-modal');
+        const modalContent = document.getElementById('modal-content');
+        const openButton = document.getElementById('open-modal-button');
+        const closeButton = document.getElementById('close-modal-button');
+        const cancelButton = document.getElementById('cancel-modal-button');
+
+        const imageInput = document.getElementById('rpProofUrl');
+        const imagePreview = document.getElementById('image-preview');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        openButton.addEventListener('click', openModal);
+        closeButton.addEventListener('click', closeModal);
+        cancelButton.addEventListener('click', closeModal);
+
+        // Menutup modal jika klik di luar kontennya
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                closeModal();
             }
         });
 
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Fungsi untuk pratinjau gambar
+        imageInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = '';
+                imagePreview.classList.add('hidden');
+            }
         });
+    });
+</script>
 
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+<script>
+    // Back to Top Button
+    const backToTopButton = document.createElement('button');
+    backToTopButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    backToTopButton.className = 'fixed bottom-8 right-8 bg-emerald-600 text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all';
+    backToTopButton.id = 'backToTop';
+    document.body.appendChild(backToTopButton);
 
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('token', data.token);
-            window.location.href = '/';
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTopButton.classList.remove('opacity-0', 'invisible');
+            backToTopButton.classList.add('opacity-100', 'visible');
         } else {
-            const errorData = await response.json();
-            document.getElementById('error-message').innerText = errorData.message;
-            document.getElementById('error-message').classList.remove('hidden');
+            backToTopButton.classList.remove('opacity-100', 'visible');
+            backToTopButton.classList.add('opacity-0', 'invisible');
         }
-    </script>
-</body>
+    });
+
+    backToTopButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        window.location.href = '/';
+    } else {
+        const errorData = await response.json();
+        document.getElementById('error-message').innerText = errorData.message;
+        document.getElementById('error-message').classList.remove('hidden');
+    }
+</script>
 
 </html>

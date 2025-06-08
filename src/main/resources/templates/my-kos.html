@@ -8,118 +8,7 @@
 </head>
 
 <body class="bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Kos Saya</h1>
-            <a href="/kos/add" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700">
-                <i class="fas fa-plus mr-2"></i> Tambah Kos
-            </a>
-        </div>
 
-        <!-- Success/Error Messages -->
-        <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
-            role="alert">
-            <span th:text="${success}"></span>
-        </div>
-        <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
-            <span th:text="${error}"></span>
-        </div>
-
-        <!-- Kos List -->
-        <div class="space-y-6">
-            <div th:each="kos : ${kosList}" class="bg-white rounded-xl shadow-md overflow-hidden">
-                <div class="flex flex-col md:flex-row">
-                    <!-- Image Section -->
-                    <div class="md:w-1/3 relative">
-                        <img th:if="${not #lists.isEmpty(kos.images)}"
-                            th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[0].url})}" alt="Kos Image"
-                            class="w-full h-48 md:h-full object-cover">
-                        <img th:if="${#lists.isEmpty(kos.images)}" src="https://placehold.co/400x300?text=No+Image"
-                            alt="No Image" class="w-full h-48 md:h-full object-cover">
-                        <div th:class="${'absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium ' + 
-                            (kos.status == 'available' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white')}">
-                            <span th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}"></span>
-                        </div>
-                    </div>
-
-                    <!-- Details Section -->
-                    <div class="p-6 md:w-2/3">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900" th:text="${kos.name}">Kos Name</h3>
-                                <p class="text-gray-600 flex items-center mt-1">
-                                    <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
-                                    <span th:text="${kos.address}">Address</span>
-                                </p>
-                            </div>
-                            <div class="flex space-x-2">
-                                <a th:href="@{/kos/edit/{id}(id=${kos.id})}"
-                                    class="p-2 text-gray-600 hover:text-emerald-600">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button th:onclick="'deleteKos(' + ${kos.id} + ')'"
-                                    class="p-2 text-gray-600 hover:text-red-600">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <p class="text-sm text-gray-600">Tipe</p>
-                                <p class="font-medium" th:text="${#strings.capitalize(kos.type)}">Type</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Kategori</p>
-                                <p class="font-medium" th:text="${#strings.capitalize(kos.category)}">Category</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Harga</p>
-                                <p class="font-medium text-emerald-600"
-                                    th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'COMMA', 0, 'POINT')} + '/bulan'">
-                                    Price
-                                </p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Kamar Tersedia</p>
-                                <p class="font-medium" th:text="${kos.roomAvailable + ' dari ' + kos.roomCount}">Rooms
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end">
-                            <a th:href="@{/kos/detail/{id}(id=${kos.id})}"
-                                class="text-emerald-600 hover:text-emerald-800">
-                                Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Empty State -->
-        <div th:if="${#lists.isEmpty(kosList)}" class="text-center py-12">
-            <i class="fas fa-home text-gray-400 text-5xl mb-4"></i>
-            <h3 class="text-xl font-medium text-gray-900 mb-2">Belum ada kos</h3>
-            <p class="text-gray-600 mb-6">Anda belum menambahkan kos apapun</p>
-            <a href="/kos/add" class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700">
-                Tambah Kos Baru
-            </a>
-        </div>
-
-        <!-- Pagination -->
-        <div th:if="${totalPages > 1}" class="flex justify-center mt-8">
-            <nav class="flex space-x-2">
-                <a th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" th:href="@{/kos/my(page=${pageNum})}"
-                    th:class="${pageNum == currentPage ? 
-                        'bg-emerald-600 text-white px-4 py-2 rounded-md' : 
-                        'bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-md'}" th:text="${pageNum + 1}">
-                </a>
-            </nav>
-        </div>
-    </div>
 
     <script>
         function deleteKos(kosId) {
@@ -131,6 +20,273 @@
                 form.submit();
             }
         }
+    </script>
+</body>
+
+</html>
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - KosKeun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        .sidebar-item.active {
+            background-color: rgba(16, 185, 129, 0.2);
+            border-left: 4px solid #10b981;
+        }
+
+        .quick-action-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-white shadow-md fixed h-full">
+            <div class="p-4 flex items-center space-x-2 border-b border-gray-200 h-16">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path
+                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                </svg>
+                <h1
+                    class="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    KosKeun</h1>
+            </div>
+
+            <div class="p-4">
+                <!-- User Profile -->
+                <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
+                    <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                    <div>
+                        <p class="font-medium text-gray-900" th:text="${#authentication.principal.fullName}">John Doe
+                        </p>
+                        <p class="text-xs text-gray-500" th:text="${#authentication.principal.roleName}">Pemilik Kos
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Menu Items -->
+                <nav class="space-y-1">
+                    <a href="/dashboard" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-tachometer-alt text-emerald-600 w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                        class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-home text-emerald-600 w-5"></i>
+                        <span>Kos Saya</span>
+                    </a>
+
+                    <a href="/kos/search" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-search text-emerald-600 w-5"></i>
+                        <span>Cari Kos</span>
+                    </a>
+
+                    <a href="/profile" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-user text-emerald-600 w-5"></i>
+                        <span>Profil Saya</span>
+                    </a>
+
+                    <a href="/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
+                        <span>Pesanan Saya</span>
+                    </a>
+
+                    <a href="/transactions" sec:authorize="hasRole('ROLE_PEMILIK')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-money-bill-wave text-emerald-600 w-5"></i>
+                        <span>Transaksi</span>
+                    </a>
+
+                    <form th:action="@{/auth/logout}" method="POST" class="m-0">
+                        <button type="submit"
+                            class="sidebar-item w-full flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-red-600">
+                            <i class="fas fa-sign-out-alt text-red-500 w-5"></i>
+                            <span>Keluar</span>
+                        </button>
+                    </form>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64">
+            <!-- Top Bar -->
+            <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
+                style="width: calc(100% - 16rem)">
+                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <main class="p-6 mt-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900">Kos Saya</h1>
+                        <a href="/kos/add" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700">
+                            <i class="fas fa-plus mr-2"></i> Tambah Kos
+                        </a>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <div th:if="${success}"
+                        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
+                        <span th:text="${success}"></span>
+                    </div>
+                    <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+                        role="alert">
+                        <span th:text="${error}"></span>
+                    </div>
+
+                    <!-- Kos List -->
+                    <div class="space-y-6">
+                        <div th:each="kos : ${kosList}" class="bg-white rounded-xl shadow-md overflow-hidden">
+                            <div class="flex flex-col md:flex-row">
+                                <!-- Image Section -->
+                                <div class="md:w-1/3 relative">
+                                    <img th:if="${not #lists.isEmpty(kos.images)}"
+                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[0].url})}"
+                                        alt="Kos Image" class="w-full h-48 md:h-full object-cover">
+                                    <img th:if="${#lists.isEmpty(kos.images)}"
+                                        src="https://placehold.co/400x300?text=No+Image" alt="No Image"
+                                        class="w-full h-48 md:h-full object-cover">
+                                    <div th:class="${'absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium ' + 
+                            (kos.status == 'available' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white')}">
+                                        <span th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Details Section -->
+                                <div class="p-6 md:w-2/3">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-gray-900" th:text="${kos.name}">Kos Name
+                                            </h3>
+                                            <p class="text-gray-600 flex items-center mt-1">
+                                                <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
+                                                <span th:text="${kos.address}">Address</span>
+                                            </p>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <a th:href="@{/kos/edit/{id}(id=${kos.id})}"
+                                                class="p-2 text-gray-600 hover:text-emerald-600">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button th:onclick="'deleteKos(' + ${kos.id} + ')'"
+                                                class="p-2 text-gray-600 hover:text-red-600">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600">Tipe</p>
+                                            <p class="font-medium" th:text="${#strings.capitalize(kos.type)}">Type</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Jenis</p>
+                                            <p class="font-medium" th:text="${#strings.capitalize(kos.category)}">
+                                                Category</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Harga</p>
+                                            <p class="font-medium text-emerald-600"
+                                                th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'COMMA', 0, 'POINT')} + '/bulan'">
+                                                Price
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-end">
+                                        <a th:href="@{/kos/detail/{id}(id=${kos.id})}"
+                                            class="text-emerald-600 hover:text-emerald-800">
+                                            Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(kosList)}" class="text-center py-12">
+                        <i class="fas fa-home text-gray-400 text-5xl mb-4"></i>
+                        <h3 class="text-xl font-medium text-gray-900 mb-2">Belum ada kos</h3>
+                        <p class="text-gray-600 mb-6">Anda belum menambahkan kos apapun</p>
+                        <a href="/kos/add" class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700">
+                            Tambah Kos Baru
+                        </a>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div th:if="${totalPages > 1}" class="flex justify-center mt-8">
+                        <nav class="flex space-x-2">
+                            <a th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                                th:href="@{/kos/my(page=${pageNum})}" th:class="${pageNum == currentPage ? 
+                        'bg-emerald-600 text-white px-4 py-2 rounded-md' : 
+                        'bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-md'}" th:text="${pageNum + 1}">
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle functionality can be added here
+        // For example:
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.toggle('hidden');
+        });
+
+        // Set active sidebar item based on current page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            const link = item.getAttribute('href');
+            if (currentPath.includes(link)) {
+                item.classList.add('active');
+            }
+        });
     </script>
 </body>
 

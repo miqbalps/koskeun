@@ -19,21 +19,37 @@ public class Transaction {
     @Column(name = "kos_id")
     private Long kosId;
 
+    @Column(name = "owner_id")
+    private Long ownerId;
+
     @Column(name = "transaction_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date transactionDate;
 
+    @Column(length = 20)
+    private String paymentType;
+
     @Column(name = "down_payment", precision = 10, scale = 2)
     private BigDecimal downPayment;
 
+    @Column(columnDefinition = "text")
+    private String dpProofUrl;
+
     @Column(name = "remaining_payment", precision = 10, scale = 2)
     private BigDecimal remainingPayment;
+
+    @Column(columnDefinition = "text")
+    private String rpProofUrl;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal total;
 
     @Column(length = 20)
     private String status;
+
+    @Column(name = "reviewed_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date reviewedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
@@ -42,6 +58,10 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "kos_id", insertable = false, updatable = false)
     private Kos kos;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", insertable = false, updatable = false)
+    private User owner;
 
     public Transaction() {
         this.transactionDate = new Date();
@@ -81,6 +101,14 @@ public class Transaction {
         this.transactionDate = transactionDate;
     }
 
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
     public BigDecimal getDownPayment() {
         return downPayment;
     }
@@ -89,12 +117,28 @@ public class Transaction {
         this.downPayment = downPayment;
     }
 
+    public String getDpProofUrl() {
+        return dpProofUrl;
+    }
+
+    public void setDpProofUrl(String dpProofUrl) {
+        this.dpProofUrl = dpProofUrl;
+    }
+
     public BigDecimal getRemainingPayment() {
         return remainingPayment;
     }
 
     public void setRemainingPayment(BigDecimal remainingPayment) {
         this.remainingPayment = remainingPayment;
+    }
+
+    public String getRpProofUrl() {
+        return rpProofUrl;
+    }
+
+    public void setRpProofUrl(String rpProofUrl) {
+        this.rpProofUrl = rpProofUrl;
     }
 
     public BigDecimal getTotal() {
@@ -127,5 +171,13 @@ public class Transaction {
 
     public void setKos(Kos kos) {
         this.kos = kos;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

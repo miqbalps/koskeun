@@ -22,16 +22,8 @@ public class KosRequest {
     @NotBlank(message = "Tipe kos tidak boleh kosong")
     private String type;
 
-    @NotBlank(message = "Kategori tidak boleh kosong")
+    @NotBlank(message = "Jenis tidak boleh kosong")
     private String category;
-
-    @NotNull(message = "Jumlah kamar tidak boleh kosong")
-    @Positive(message = "Jumlah kamar harus lebih dari 0")
-    private Integer roomCount;
-
-    @NotNull(message = "Jumlah kamar tersedia tidak boleh kosong")
-    @Positive(message = "Jumlah kamar tersedia harus lebih dari 0")
-    private Integer roomAvailable;
 
     @NotBlank(message = "Alamat tidak boleh kosong")
     private String address;

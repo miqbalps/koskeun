@@ -83,14 +83,13 @@
 
                 <!-- Menu Items -->
                 <nav class="space-y-1">
-                    <a href="/dashboard"
-                        class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/dashboard" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-tachometer-alt text-emerald-600 w-5"></i>
                         <span>Dashboard</span>
                     </a>
 
                     <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
                     </a>
@@ -134,7 +133,7 @@
             <!-- Top Bar -->
             <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
                 style="width: calc(100% - 16rem)">
-                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+                <h2 class="text-xl font-bold text-gray-800">Kos Saya</h2>
                 <div class="flex items-center space-x-4">
                     <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
                         <i class="fas fa-bell"></i>
@@ -149,8 +148,13 @@
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
                 <h1 class="text-3xl font-bold text-gray-900 mb-8">Tambah Kos Baru</h1>
 
-                <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
-                    role="alert">
+                <!-- Setelah tag h1 "Tambah Kos Baru" -->
+                <div th:if="${success}"
+                    class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg">
+                    <span th:text="${success}"></span>
+                </div>
+
+                <div th:if="${error}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
                     <span th:text="${error}"></span>
                 </div>
 
@@ -164,10 +168,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Form fields for basic info (same as before) -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Kos*</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama
+                                    Kos*</label>
                                 <input type="text" th:field="*{name}" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                    th:classappend="${#fields.hasErrors('name')} ? 'border-red-500'">
+                                    th:classappend="${#fields.hasErrors('name')} ? 'border-red-500'"
+                                    placeholder="e.g. Kos Sejahtera Indah">
                                 <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('name')}"
                                     th:errors="*{name}"></span>
                             </div>
@@ -175,32 +181,29 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Harga per Bulan*</label>
                                 <input type="number" th:field="*{priceMonthly}" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                    th:classappend="${#fields.hasErrors('priceMonthly')} ? 'border-red-500'">
+                                    th:classappend="${#fields.hasErrors('priceMonthly')} ? 'border-red-500'"
+                                    placeholder="e.g. 1500000">
                                 <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('priceMonthly')}"
                                     th:errors="*{priceMonthly}"></span>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Kos*</label>
-                                <select th:field="*{type}" required
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Kamar Kos*</label>
+                                <input type="text" th:field="*{type}" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                    th:classappend="${#fields.hasErrors('type')} ? 'border-red-500'">
-                                    <option value="">Pilih Tipe</option>
-                                    <option value="putra">Putra</option>
-                                    <option value="putri">Putri</option>
-                                    <option value="campur">Campur</option>
-                                </select>
+                                    th:classappend="${#fields.hasErrors('type')} ? 'border-red-500'"
+                                    placeholder="e.g. A, B, C">
                                 <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('type')}"
                                     th:errors="*{type}"></span>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Kategori*</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis*</label>
                                 <select th:field="*{category}" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     th:classappend="${#fields.hasErrors('category')} ? 'border-red-500'">
-                                    <option value="">Pilih Kategori</option>
-                                    <option value="ekonomis">Ekonomis</option>
-                                    <option value="standard">Standard</option>
-                                    <option value="premium">Premium</option>
+                                    <option value="">Pilih Jenis</option>
+                                    <option value="putra">Putra</option>
+                                    <option value="putri">Putri</option>
+                                    <option value="campur">Campur</option>
                                 </select>
                                 <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('category')}"
                                     th:errors="*{category}"></span>
@@ -210,35 +213,12 @@
                         <!-- Description -->
                         <div class="mt-6">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi*</label>
-                            <textarea th:field="*{description}" rows="4" required
+                            <textarea th:field="*{description}" rows="10" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                th:classappend="${#fields.hasErrors('description')} ? 'border-red-500'"></textarea>
+                                th:classappend="${#fields.hasErrors('description')} ? 'border-red-500'"
+                                placeholder="Jelaskan detail kos Anda (penjelasan umum, fasilitas, spesifikasi kamar kos)"></textarea>
                             <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('description')}"
                                 th:errors="*{description}"></span>
-                        </div>
-
-                        <!-- Room Information -->
-                        <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4 pb-2 border-b border-gray-200">
-                            Informasi
-                            Kamar
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Kamar*</label>
-                                <input type="number" th:field="*{roomCount}" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                    th:classappend="${#fields.hasErrors('roomCount')} ? 'border-red-500'">
-                                <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('roomCount')}"
-                                    th:errors="*{roomCount}"></span>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Kamar Tersedia*</label>
-                                <input type="number" th:field="*{roomAvailable}" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                    th:classappend="${#fields.hasErrors('roomAvailable')} ? 'border-red-500'">
-                                <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('roomAvailable')}"
-                                    th:errors="*{roomAvailable}"></span>
-                            </div>
                         </div>
 
                         <!-- Location -->
@@ -248,7 +228,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap*</label>
                             <textarea th:field="*{address}" rows="2" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                th:classappend="${#fields.hasErrors('address')} ? 'border-red-500'"></textarea>
+                                th:classappend="${#fields.hasErrors('address')} ? 'border-red-500'"
+                                placeholder="e.g. Jl. Raya Jatinangor No. 123, Desa Cibeusi, Kecamatan Jatinangor, Kabupaten Sumedang, Jawa Barat, 45363"></textarea>
                             <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('address')}"
                                 th:errors="*{address}"></span>
                         </div>
@@ -258,7 +239,8 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Latitude</label>
                                 <input type="text" th:field="*{latitude}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                    th:classappend="${#fields.hasErrors('latitude')} ? 'border-red-500'">
+                                    th:classappend="${#fields.hasErrors('latitude')} ? 'border-red-500'"
+                                    placeholder="e.g. -6.123456">
                                 <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('latitude')}"
                                     th:errors="*{latitude}"></span>
                             </div>
@@ -266,210 +248,225 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Longitude</label>
                                 <input type="text" th:field="*{longitude}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                    th:classappend="${#fields.hasErrors('longitude')} ? 'border-red-500'">
+                                    th:classappend="${#fields.hasErrors('longitude')} ? 'border-red-500'"
+                                    placeholder="e.g. 106.123456">
                                 <span class="text-red-500 text-xs" th:if="${#fields.hasErrors('longitude')}"
                                     th:errors="*{longitude}"></span>
                             </div>
                         </div>
+                        <p class="mt-4 text-sm text-gray-500">
+                            Untuk mendapatkan nilai latitude dan longitude, ikuti langkah berikut:
+                        <ol class="list-decimal ml-5 mt-2 text-sm text-gray-500">
+                            <li>Kunjungi <a href="https://www.latlong.net/" target="_blank"
+                                    class="text-emerald-600 hover:underline">latlong.net</a></li>
+                            <li>Cari dan pilih titik lokasi kos Anda pada map</li>
+                            <li>Salin nilai latitude ke kolom Latitude di atas</li>
+                            <li>Salin nilai longitude ke kolom Longitude di atas</li>
+                        </ol>
+                        </p>
 
                         <!-- Image Upload Sections -->
                         <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4 pb-2 border-b border-gray-200">Foto Kos
                         </h2>
 
-                        <!-- 1. Foto Tampak Depan Bangunan -->
-                        <div class="mt-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Depan Bangunan*
-                                (Maks. 2MB)</label>
-                            <input type="hidden" name="frontBuildingType" value="front_house">
-                            <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                id="frontBuildingArea">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                        viewBox="0 0 48 48" aria-hidden="true">
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="frontBuilding"
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
-                                            <span>Upload Foto</span>
-                                            <input id="frontBuilding" name="frontBuilding" type="file" class="sr-only"
-                                                accept="image/*" required>
-                                        </label>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- 1. Foto Tampak Depan Bangunan -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Depan Bangunan*
+                                    (Maks. 2MB)</label>
+                                <input type="hidden" name="frontBuildingType" value="front_house">
+                                <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                                    id="frontBuildingArea">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                            viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="frontBuilding"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload Foto</span>
+                                                <input id="frontBuilding" name="frontBuilding" type="file"
+                                                    class="sr-only" accept="image/*" required>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Format: JPG, PNG (Rasio 16:9 recommended)</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">Format: JPG, PNG (Rasio 16:9 recommended)</p>
                                 </div>
+                                <div id="frontBuildingPreview" class="image-preview-container"></div>
                             </div>
-                            <div id="frontBuildingPreview" class="image-preview-container"></div>
-                        </div>
 
-                        <!-- 2. Foto Tampak Dalam Bangunan -->
-                        <div class="mt-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Dalam Bangunan*
-                                (Maks. 2MB)</label>
-                            <input type="hidden" name="interiorType" value="inside_house">
-                            <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                id="interiorArea">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                        viewBox="0 0 48 48" aria-hidden="true">
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="interior"
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
-                                            <span>Upload Foto</span>
-                                            <input id="interior" name="interior" type="file" class="sr-only"
-                                                accept="image/*" required>
-                                        </label>
+                            <!-- 2. Foto Tampak Dalam Bangunan -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Dalam Bangunan*
+                                    (Maks. 2MB)</label>
+                                <input type="hidden" name="interiorType" value="inside_house">
+                                <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                                    id="interiorArea">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                            viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="interior"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload Foto</span>
+                                                <input id="interior" name="interior" type="file" class="sr-only"
+                                                    accept="image/*" required>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Tampilkan area umum dalam bangunan</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">Tampilkan area umum dalam bangunan</p>
                                 </div>
+                                <div id="interiorPreview" class="image-preview-container"></div>
                             </div>
-                            <div id="interiorPreview" class="image-preview-container"></div>
-                        </div>
 
-                        <!-- 3. Foto Tampak dari Jalan -->
-                        <div class="mt-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak dari Jalan (Maks.
-                                2MB)</label>
-                            <input type="hidden" name="streetViewType" value="road">
-                            <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                id="streetViewArea">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                        viewBox="0 0 48 48" aria-hidden="true">
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="streetView"
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
-                                            <span>Upload Foto</span>
-                                            <input id="streetView" name="streetView" type="file" class="sr-only"
-                                                accept="image/*">
-                                        </label>
+                            <!-- 3. Foto Tampak dari Jalan -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak dari Jalan
+                                    (Maks.
+                                    2MB)</label>
+                                <input type="hidden" name="streetViewType" value="road">
+                                <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                                    id="streetViewArea">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                            viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="streetView"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload Foto</span>
+                                                <input id="streetView" name="streetView" type="file" class="sr-only"
+                                                    accept="image/*">
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Tampilkan pandangan kos dari jalan</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">Tampilkan pandangan kos dari jalan</p>
                                 </div>
+                                <div id="streetViewPreview" class="image-preview-container"></div>
                             </div>
-                            <div id="streetViewPreview" class="image-preview-container"></div>
-                        </div>
 
-                        <!-- 4. Foto Depan Kamar -->
-                        <div class="mt-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Depan Kamar* (Maks.
-                                2MB)</label>
-                            <input type="hidden" name="roomFrontType" value="front_room">
-                            <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                id="roomFrontArea">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                        viewBox="0 0 48 48" aria-hidden="true">
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="roomFront"
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
-                                            <span>Upload Foto</span>
-                                            <input id="roomFront" name="roomFront" type="file" class="sr-only"
-                                                accept="image/*" required>
-                                        </label>
+                            <!-- 4. Foto Depan Kamar -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Depan Kamar* (Maks.
+                                    2MB)</label>
+                                <input type="hidden" name="roomFrontType" value="front_room">
+                                <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                                    id="roomFrontArea">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                            viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="roomFront"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload Foto</span>
+                                                <input id="roomFront" name="roomFront" type="file" class="sr-only"
+                                                    accept="image/*" required>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Tampilkan pintu dan area depan kamar</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">Tampilkan pintu dan area depan kamar</p>
                                 </div>
+                                <div id="roomFrontPreview" class="image-preview-container"></div>
                             </div>
-                            <div id="roomFrontPreview" class="image-preview-container"></div>
-                        </div>
 
-                        <!-- 5. Foto Dalam Kamar -->
-                        <div class="mt-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Dalam Kamar* (Maks.
-                                2MB)</label>
-                            <input type="hidden" name="roomInteriorType" value="inside_room">
-                            <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                id="roomInteriorArea">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                        viewBox="0 0 48 48" aria-hidden="true">
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="roomInterior"
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
-                                            <span>Upload Foto</span>
-                                            <input id="roomInterior" name="roomInterior" type="file" class="sr-only"
-                                                accept="image/*" required>
-                                        </label>
+                            <!-- 5. Foto Dalam Kamar -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Dalam Kamar* (Maks.
+                                    2MB)</label>
+                                <input type="hidden" name="roomInteriorType" value="inside_room">
+                                <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                                    id="roomInteriorArea">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                            viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="roomInterior"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload Foto</span>
+                                                <input id="roomInterior" name="roomInterior" type="file" class="sr-only"
+                                                    accept="image/*" required>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Tampilkan kondisi dalam kamar secara jelas</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">Tampilkan kondisi dalam kamar secara jelas</p>
                                 </div>
+                                <div id="roomInteriorPreview" class="image-preview-container"></div>
                             </div>
-                            <div id="roomInteriorPreview" class="image-preview-container"></div>
-                        </div>
 
-                        <!-- 6. Foto Kamar Mandi -->
-                        <div class="mt-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Kamar Mandi* (Maks.
-                                2MB)</label>
-                            <input type="hidden" name="bathroomType" value="bathroom">
-                            <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                id="bathroomArea">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                        viewBox="0 0 48 48" aria-hidden="true">
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="bathroom"
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
-                                            <span>Upload Foto</span>
-                                            <input id="bathroom" name="bathroom" type="file" class="sr-only"
-                                                accept="image/*" required>
-                                        </label>
+                            <!-- 6. Foto Kamar Mandi -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Kamar Mandi* (Maks.
+                                    2MB)</label>
+                                <input type="hidden" name="bathroomType" value="bathroom">
+                                <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                                    id="bathroomArea">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                            viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="bathroom"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload Foto</span>
+                                                <input id="bathroom" name="bathroom" type="file" class="sr-only"
+                                                    accept="image/*" required>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Tampilkan kondisi kamar mandi</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">Tampilkan kondisi kamar mandi</p>
                                 </div>
+                                <div id="bathroomPreview" class="image-preview-container"></div>
                             </div>
-                            <div id="bathroomPreview" class="image-preview-container"></div>
-                        </div>
 
-                        <!-- Additional Images -->
-                        <div class="mt-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tambahan (Maks. 5 foto, 2MB
-                                per foto)</label>
-                            <input type="hidden" name="additionalImagesType" value="additional">
-                            <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                id="additionalImagesArea">
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                                        viewBox="0 0 48 48" aria-hidden="true">
-                                        <path
-                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="additionalImages"
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
-                                            <span>Upload Foto</span>
-                                            <input id="additionalImages" name="additionalImages" type="file"
-                                                class="sr-only" accept="image/*" multiple>
-                                        </label>
+                            <!-- Additional Images -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tambahan (Maks. 5 foto,
+                                    2MB
+                                    per foto)</label>
+                                <input type="hidden" name="additionalImagesType" value="additional">
+                                <div class="upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+                                    id="additionalImagesArea">
+                                    <div class="space-y-1 text-center">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                            viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex text-sm text-gray-600 justify-center">
+                                            <label for="additionalImages"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                                                <span>Upload Foto</span>
+                                                <input id="additionalImages" name="additionalImages" type="file"
+                                                    class="sr-only" accept="image/*" multiple>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Foto fasilitas tambahan atau sudut lain</p>
                                     </div>
-                                    <p class="text-xs text-gray-500">Foto fasilitas tambahan atau sudut lain</p>
                                 </div>
+                                <div id="additionalImagesPreview" class="image-preview-container"></div>
                             </div>
-                            <div id="additionalImagesPreview" class="image-preview-container"></div>
                         </div>
                     </div>
 
