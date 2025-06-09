@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Cari Kos - KosKeun</title>
+    <title>Dashboard - KosKeun</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -85,14 +85,13 @@
                         <span>Kos Saya</span>
                     </a>
 
-                    <a href="/kos/search"
-                        class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/kos/search" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-search text-emerald-600 w-5"></i>
                         <span>Cari Kos</span>
                     </a>
 
                     <a href="/kos/approval" sec:authorize="hasRole('ROLE_ADMIN')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-pen text-emerald-600 w-5"></i>
                         <span>Pengajuan Kos</span>
                     </a>
@@ -130,7 +129,7 @@
             <!-- Top Bar -->
             <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
                 style="width: calc(100% - 16rem)">
-                <h2 class="text-xl font-bold text-gray-800">Cari Kos</h2>
+                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
                 <div class="flex items-center space-x-4">
                     <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
                         <i class="fas fa-bell"></i>
@@ -148,7 +147,7 @@
                     <!-- Search and Filter Section -->
                     <div class="mb-8">
                         <div class="bg-white filter-card rounded-xl p-6 mb-6">
-                            <h2 class="text-xl font-bold text-gray-900 mb-4">Filter</h2>
+                            <h2 class="text-xl font-bold text-gray-900 mb-4">Cari Kos</h2>
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
@@ -211,89 +210,93 @@
 
                             <!-- Kos Cards -->
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                <div th:each="kos : ${kosList}"
-                                    th:if="${kos.status == 'available' and kos.approvalStatus == 'approved'}"
-                                    class="kos-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full transition-transform transform hover:-translate-y-1">
 
-                                    <div class="w-full relative">
-                                        <img th:if="${not #lists.isEmpty(kos.images)}"
-                                            th:src="@{'/uploads/kos-images/' + ${kos.images[0].url}}" alt="Kos Image"
-                                            class="w-full h-56 object-cover">
+                                <div th:each="kos : ${kosList}">
+                                    <div th:if="${kos.approvalStatus != 'approved'}"
+                                        class="kos-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full transition-transform transform hover:-translate-y-1">
 
-                                        <img th:unless="${not #lists.isEmpty(kos.images)}"
-                                            src="https://placehold.co/400x300?text=No+Image" alt="Kos Placeholder"
-                                            class="w-full h-56 object-cover bg-gray-100">
+                                        <div class="w-full relative">
+                                            <img th:if="${not #lists.isEmpty(kos.images)}"
+                                                th:src="@{'/uploads/kos-images/' + ${kos.images[0].url}}"
+                                                alt="Kos Image" class="w-full h-56 object-cover">
 
-                                        <div class="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-medium"
-                                            th:classappend="${kos.status == 'available'} ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'">
-                                            <span
-                                                th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}">Tersedia</span>
-                                        </div>
+                                            <img th:unless="${not #lists.isEmpty(kos.images)}"
+                                                src="https://placehold.co/400x300?text=No+Image" alt="Kos Placeholder"
+                                                class="w-full h-56 object-cover bg-gray-100">
 
-                                        <div
-                                            class="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full text-xs flex items-center">
-                                            <i class="fas fa-camera mr-1"></i>
-                                            <span
-                                                th:text="${#lists.isEmpty(kos.images)} ? '0' : ${#lists.size(kos.images)}">0</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="p-4 flex flex-col flex-grow">
-                                        <div class="flex-grow">
-                                            <div class="flex justify-between items-start mb-2">
-                                                <h3 class="text-lg font-bold text-gray-900 line-clamp-1"
-                                                    th:text="${kos.name}">
-                                                    Nama
-                                                    Kos Modern dan Panjang Sekali</h3>
-                                                <div
-                                                    class="flex-shrink-0 flex items-center bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">
-                                                    <i class="fas fa-star text-yellow-500 mr-1 text-xs"></i>
-                                                    <span class="text-xs font-bold">4.8</span>
-                                                </div>
-                                            </div>
-
-                                            <p class="text-sm text-gray-500 mb-3 flex items-start">
-                                                <i
-                                                    class="fas fa-map-marker-alt text-emerald-600 mr-2 mt-1 flex-shrink-0"></i>
-                                                <span th:text="${kos.address}" class="line-clamp-1">Alamat lengkap
-                                                    kos yang
-                                                    mungkin
-                                                    cukup panjang</span>
-                                            </p>
-
-                                            <div class="flex flex-wrap gap-2 mb-4">
-                                                <span class="px-2 py-1 rounded-full text-xs font-medium"
-                                                    th:classappend="${kos.type == 'putra'} ? 'bg-blue-100 text-blue-800' : (${kos.type == 'putri'} ? 'bg-pink-100 text-pink-800' : 'bg-purple-100 text-purple-800')"
-                                                    th:text="'Tipe '+${#strings.capitalize(kos.type)}">
-                                                    Tipe Kos
-                                                </span>
+                                            <div class="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-medium"
+                                                th:classappend="${kos.status == 'available'} ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'">
                                                 <span
-                                                    class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
-                                                    th:text="${#strings.capitalize(kos.category)}">
-                                                    Jenis
-                                                </span>
+                                                    th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}">Tersedia</span>
+                                            </div>
+
+                                            <div
+                                                class="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                                <i class="fas fa-camera mr-1"></i>
+                                                <span
+                                                    th:text="${#lists.isEmpty(kos.images)} ? '0' : ${#lists.size(kos.images)}">0</span>
                                             </div>
                                         </div>
 
-                                        <div class="mt-4">
-                                            <div class="flex justify-between items-center">
-                                                <div>
-                                                    <p class="text-emerald-600 font-bold text-md">
-                                                        <span
-                                                            th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'POINT', 0, 'COMMA')}">
-                                                            Rp 1.500.000
-                                                        </span>
-                                                        <span class="text-sm text-gray-500 font-normal">/bulan</span>
-                                                    </p>
+                                        <div class="p-4 flex flex-col flex-grow">
+                                            <div class="flex-grow">
+                                                <div class="flex justify-between items-start mb-2">
+                                                    <h3 class="text-lg font-bold text-gray-900 line-clamp-1"
+                                                        th:text="${kos.name}">
+                                                        Nama
+                                                        Kos Modern dan Panjang Sekali</h3>
+                                                    <div
+                                                        class="flex-shrink-0 flex items-center bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">
+                                                        <i class="fas fa-star text-yellow-500 mr-1 text-xs"></i>
+                                                        <span class="text-xs font-bold">4.8</span>
+                                                    </div>
                                                 </div>
-                                                <a th:href="@{'/kos/detail/' + ${kos.id}}"
-                                                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                                    <span>Detail</span>
-                                                </a>
+
+                                                <p class="text-sm text-gray-500 mb-3 flex items-start">
+                                                    <i
+                                                        class="fas fa-map-marker-alt text-emerald-600 mr-2 mt-1 flex-shrink-0"></i>
+                                                    <span th:text="${kos.address}" class="line-clamp-1">Alamat lengkap
+                                                        kos yang
+                                                        mungkin
+                                                        cukup panjang</span>
+                                                </p>
+
+                                                <div class="flex flex-wrap gap-2 mb-4">
+                                                    <span class="px-2 py-1 rounded-full text-xs font-medium"
+                                                        th:classappend="${kos.type == 'putra'} ? 'bg-blue-100 text-blue-800' : (${kos.type == 'putri'} ? 'bg-pink-100 text-pink-800' : 'bg-purple-100 text-purple-800')"
+                                                        th:text="'Tipe '+${#strings.capitalize(kos.type)}">
+                                                        Tipe Kos
+                                                    </span>
+                                                    <span
+                                                        class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                                                        th:text="${#strings.capitalize(kos.category)}">
+                                                        Jenis
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-4">
+                                                <div class="flex justify-between items-center">
+                                                    <div>
+                                                        <p class="text-emerald-600 font-bold text-md">
+                                                            <span
+                                                                th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'POINT', 0, 'COMMA')}">
+                                                                Rp 1.500.000
+                                                            </span>
+                                                            <span
+                                                                class="text-sm text-gray-500 font-normal">/bulan</span>
+                                                        </p>
+                                                    </div>
+                                                    <a th:href="@{'/kos/detail/' + ${kos.id}}"
+                                                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                                        <span>Detail</span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
                             <!-- Pagination -->

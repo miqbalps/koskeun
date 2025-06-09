@@ -71,8 +71,15 @@
             <div class="p-4">
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
-                    <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
-                        alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                    <div sec:authorize="isAuthenticated()">
+                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                            alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                    </div>
+
+                    <div sec:authorize="isAnonymous()">
+                        <img src="https://i.pravatar.cc/150?u=anonymous" alt="Profile"
+                            class="w-10 h-10 rounded-full object-cover">
+                    </div>
                     <div>
                         <p class="font-medium text-gray-900" th:text="${#authentication.principal.fullName}">John Doe
                         </p>
@@ -94,27 +101,32 @@
                         <span>Kos Saya</span>
                     </a>
 
-                    <a href="/kos/search" sec:authorize="hasRole('ROLE_PENCARI')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/kos/search" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-search text-emerald-600 w-5"></i>
                         <span>Cari Kos</span>
+                    </a>
+
+                    <a href="/kos/approval" sec:authorize="hasRole('ROLE_ADMIN')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-pen text-emerald-600 w-5"></i>
+                        <span>Pengajuan Kos</span>
+                    </a>
+
+                    <a href="/transactions/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
+                        <span>Pengajuan Sewa</span>
+                    </a>
+
+                    <a href="/transactions"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-money-bill-wave text-emerald-600 w-5"></i>
+                        <span>Transaksi</span>
                     </a>
 
                     <a href="/profile" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-user text-emerald-600 w-5"></i>
                         <span>Profil Saya</span>
-                    </a>
-
-                    <a href="/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
-                        <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
-                        <span>Pesanan Saya</span>
-                    </a>
-
-                    <a href="/transactions" sec:authorize="hasRole('ROLE_PEMILIK')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
-                        <i class="fas fa-money-bill-wave text-emerald-600 w-5"></i>
-                        <span>Transaksi</span>
                     </a>
 
                     <form th:action="@{/auth/logout}" method="POST" class="m-0">

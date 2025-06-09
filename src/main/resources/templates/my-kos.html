@@ -30,7 +30,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - KosKeun</title>
+    <title>Kos Saya - KosKeun</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -82,8 +82,15 @@
             <div class="p-4">
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
-                    <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
-                        alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                    <div sec:authorize="isAuthenticated()">
+                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                            alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                    </div>
+
+                    <div sec:authorize="isAnonymous()">
+                        <img src="https://i.pravatar.cc/150?u=anonymous" alt="Profile"
+                            class="w-10 h-10 rounded-full object-cover">
+                    </div>
                     <div>
                         <p class="font-medium text-gray-900" th:text="${#authentication.principal.fullName}">John Doe
                         </p>
@@ -105,27 +112,32 @@
                         <span>Kos Saya</span>
                     </a>
 
-                    <a href="/kos/search" sec:authorize="hasRole('ROLE_PENCARI')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/kos/search" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-search text-emerald-600 w-5"></i>
                         <span>Cari Kos</span>
+                    </a>
+
+                    <a href="/kos/approval" sec:authorize="hasRole('ROLE_ADMIN')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-pen text-emerald-600 w-5"></i>
+                        <span>Pengajuan Kos</span>
+                    </a>
+
+                    <a href="/transactions/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
+                        <span>Pengajuan Sewa</span>
+                    </a>
+
+                    <a href="/transactions"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        <i class="fas fa-money-bill-wave text-emerald-600 w-5"></i>
+                        <span>Transaksi</span>
                     </a>
 
                     <a href="/profile" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-user text-emerald-600 w-5"></i>
                         <span>Profil Saya</span>
-                    </a>
-
-                    <a href="/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
-                        <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
-                        <span>Pesanan Saya</span>
-                    </a>
-
-                    <a href="/transactions" sec:authorize="hasRole('ROLE_PEMILIK')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
-                        <i class="fas fa-money-bill-wave text-emerald-600 w-5"></i>
-                        <span>Transaksi</span>
                     </a>
 
                     <form th:action="@{/auth/logout}" method="POST" class="m-0">
@@ -144,7 +156,7 @@
             <!-- Top Bar -->
             <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
                 style="width: calc(100% - 16rem)">
-                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+                <h2 class="text-xl font-bold text-gray-800">Kos Saya</h2>
                 <div class="flex items-center space-x-4">
                     <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
                         <i class="fas fa-bell"></i>
@@ -160,7 +172,7 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <!-- Header -->
                     <div class="flex justify-between items-center mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900">Kos Saya</h1>
+                        <h1 class="text-3xl font-bold text-gray-900">Daftar Kos Saya</h1>
                         <a href="/kos/add" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700">
                             <i class="fas fa-plus mr-2"></i> Tambah Kos
                         </a>
@@ -176,70 +188,83 @@
                         <span th:text="${error}"></span>
                     </div>
 
-                    <!-- Kos List -->
-                    <div class="space-y-6">
-                        <div th:each="kos : ${kosList}" class="bg-white rounded-xl shadow-md overflow-hidden">
-                            <div class="flex flex-col md:flex-row">
-                                <!-- Image Section -->
-                                <div class="md:w-1/3 relative">
-                                    <img th:if="${not #lists.isEmpty(kos.images)}"
-                                        th:src="@{/uploads/kos-images/{filename}(filename=${kos.images[0].url})}"
-                                        alt="Kos Image" class="w-full h-48 md:h-full object-cover">
-                                    <img th:if="${#lists.isEmpty(kos.images)}"
-                                        src="https://placehold.co/400x300?text=No+Image" alt="No Image"
-                                        class="w-full h-48 md:h-full object-cover">
-                                    <div th:class="${'absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium ' + 
-                            (kos.status == 'available' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white')}">
-                                        <span th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}"></span>
+                    <!-- Kos Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div th:each="kos : ${kosList}"
+                            class="kos-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full transition-transform transform hover:-translate-y-1"
+                            th:if="${kos.owner.id == #authentication.principal.id}">
+
+                            <div class="w-full relative">
+                                <img th:if="${not #lists.isEmpty(kos.images)}"
+                                    th:src="@{'/uploads/kos-images/' + ${kos.images[0].url}}" alt="Kos Image"
+                                    class="w-full h-56 object-cover">
+
+                                <img th:unless="${not #lists.isEmpty(kos.images)}"
+                                    src="https://placehold.co/400x300?text=No+Image" alt="Kos Placeholder"
+                                    class="w-full h-56 object-cover bg-gray-100">
+
+                                <div class="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-medium"
+                                    th:classappend="${kos.status == 'available'} ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'">
+                                    <span th:text="${kos.status == 'available' ? 'Tersedia' : 'Penuh'}">Tersedia</span>
+                                </div>
+
+                                <div
+                                    class="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                    <i class="fas fa-camera mr-1"></i>
+                                    <span
+                                        th:text="${#lists.isEmpty(kos.images)} ? '0' : ${#lists.size(kos.images)}">0</span>
+                                </div>
+                            </div>
+
+                            <div class="p-4 flex flex-col flex-grow">
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-lg font-bold text-gray-900 line-clamp-1" th:text="${kos.name}">
+                                            Nama
+                                            Kos Modern dan Panjang Sekali</h3>
+                                        <div
+                                            class="flex-shrink-0 flex items-center bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">
+                                            <i class="fas fa-star text-yellow-500 mr-1 text-xs"></i>
+                                            <span class="text-xs font-bold">4.8</span>
+                                        </div>
+                                    </div>
+
+                                    <p class="text-sm text-gray-500 mb-3 flex items-start">
+                                        <i class="fas fa-map-marker-alt text-emerald-600 mr-2 mt-1 flex-shrink-0"></i>
+                                        <span th:text="${kos.address}" class="line-clamp-1">Alamat lengkap
+                                            kos yang
+                                            mungkin
+                                            cukup panjang</span>
+                                    </p>
+
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium"
+                                            th:classappend="${kos.type == 'putra'} ? 'bg-blue-100 text-blue-800' : (${kos.type == 'putri'} ? 'bg-pink-100 text-pink-800' : 'bg-purple-100 text-purple-800')"
+                                            th:text="'Tipe '+${#strings.capitalize(kos.type)}">
+                                            Tipe Kos
+                                        </span>
+                                        <span
+                                            class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                                            th:text="${#strings.capitalize(kos.category)}">
+                                            Jenis
+                                        </span>
                                     </div>
                                 </div>
 
-                                <!-- Details Section -->
-                                <div class="p-6 md:w-2/3">
-                                    <div class="flex justify-between items-start mb-4">
+                                <div class="mt-4">
+                                    <div class="flex justify-between items-center">
                                         <div>
-                                            <h3 class="text-xl font-bold text-gray-900" th:text="${kos.name}">Kos Name
-                                            </h3>
-                                            <p class="text-gray-600 flex items-center mt-1">
-                                                <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
-                                                <span th:text="${kos.address}">Address</span>
+                                            <p class="text-emerald-600 font-bold text-md">
+                                                <span
+                                                    th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'POINT', 0, 'COMMA')}">
+                                                    Rp 1.500.000
+                                                </span>
+                                                <span class="text-sm text-gray-500 font-normal">/bulan</span>
                                             </p>
                                         </div>
-                                        <div class="flex space-x-2">
-                                            <a th:href="@{/kos/edit/{id}(id=${kos.id})}"
-                                                class="p-2 text-gray-600 hover:text-emerald-600">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button th:onclick="'deleteKos(' + ${kos.id} + ')'"
-                                                class="p-2 text-gray-600 hover:text-red-600">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-4 mb-4">
-                                        <div>
-                                            <p class="text-sm text-gray-600">Tipe</p>
-                                            <p class="font-medium" th:text="${#strings.capitalize(kos.type)}">Type</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm text-gray-600">Jenis</p>
-                                            <p class="font-medium" th:text="${#strings.capitalize(kos.category)}">
-                                                Category</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm text-gray-600">Harga</p>
-                                            <p class="font-medium text-emerald-600"
-                                                th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'COMMA', 0, 'POINT')} + '/bulan'">
-                                                Price
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex justify-end">
-                                        <a th:href="@{/kos/detail/{id}(id=${kos.id})}"
-                                            class="text-emerald-600 hover:text-emerald-800">
-                                            Lihat Detail <i class="fas fa-arrow-right ml-1"></i>
+                                        <a th:href="@{'/kos/detail/' + ${kos.id}}"
+                                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                            <span>Detail</span>
                                         </a>
                                     </div>
                                 </div>

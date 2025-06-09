@@ -53,7 +53,7 @@ public class Kos {
     @Column(length = 20)
     private String approvalStatus;
 
-    @Column(name = "approval_reviewed_at")
+    @Column(name = "reviewed_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date reviewedAt;
 
@@ -204,5 +204,9 @@ public class Kos {
 
     public Date getReviewedAt() {
         return reviewedAt;
+    }
+
+    public void setReviewedAt(Date reviewedAt) {
+        this.reviewedAt = reviewedAt;
     }
 }

@@ -1,9 +1,13 @@
 package com.example.koskeun.service;
 
+import com.example.koskeun.dto.request.KosApprovalRequest;
 import com.example.koskeun.model.Kos;
 import com.example.koskeun.model.KosImage;
 import com.example.koskeun.repository.KosImageRepository;
 import com.example.koskeun.repository.KosRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -155,6 +159,33 @@ public class KosService {
 
         deleteImageFile(image.getUrl());
         kosImageRepository.delete(image);
+    }
+
+    @Transactional
+    public Kos approvalKos(Long kosId, KosApprovalRequest request) {
+        // 1. Otorisasi: Pastikan user adalah ADMIN (atau role lain yang berwenang)
+        var currentUser = authService.getCurrentUser(); // Menggunakan UserDetailsImpl dari AuthService Anda
+        if (currentUser == null || !currentUser.getRoleName().equalsIgnoreCase("admin")) {
+            throw new SecurityException("Hanya ADMIN yang dapat menyetujui Kos.");
+        }
+
+        // 2. Validasi input
+        if (!List.of("approved", "rejected").contains(request.getApprovalStatus().toLowerCase())) {
+            throw new IllegalArgumentException("Status persetujuan tidak valid. Gunakan 'approved' atau 'rejected'.");
+        }
+
+        // 3. Ambil data Kos dari database
+        Kos kosToApprove = kosRepository.findById(kosId)
+                .orElseThrow(() -> new EntityNotFoundException("Kos dengan ID " + kosId + " tidak ditemukan."));
+
+        // 4. Update field-field yang relevan
+        kosToApprove.setApprovalStatus(request.getApprovalStatus());
+        kosToApprove.setApprovalNotes(request.getApprovalNotes());
+        kosToApprove.setReviewedAt(new java.util.Date()); // Set waktu sekarang
+        kosToApprove.setAdminId(currentUser.getId()); // Set admin yang melakukan approval
+
+        // 5. Simpan perubahan ke database
+        return kosRepository.save(kosToApprove);
     }
 
     @Transactional

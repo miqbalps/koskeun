@@ -143,89 +143,53 @@
 
             <!-- Page Content -->
             <main class="p-6 mt-16">
-                <!-- Welcome Banner -->
-                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        Selamat datang, <span class="text-emerald-600"
-                            th:text="${#authentication.principal.fullName}">User</span>!
-                    </h2>
-                    <p class="text-gray-600 mt-2">Apa yang ingin Anda lakukan hari ini?</p>
-                </div>
+                <main class="max-w-2xl mx-auto p-6 mt-10">
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Lakukan Pembayaran</h1>
+                        <p class="text-gray-500 mb-6">Untuk booking kos <strong th:text="${transaction.kos.name}">Nama
+                                Kos</strong>
+                        </p>
 
-                <!-- Quick Actions -->
-                <h3 class="text-xl font-semibold text-gray-700 mb-6">Aksi Cepat</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div sec:authorize="hasRole('ROLE_PEMILIK')" class="quick-action-card">
-                        <a href="/kos/add"
-                            class="flex flex-col items-center justify-center p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl text-white h-full">
-                            <i class="fas fa-plus-circle text-3xl mb-3"></i>
-                            <span class="text-lg font-medium">Tambah Kos Baru</span>
-                            <p class="text-sm text-emerald-100 mt-2 text-center">Tambahkan properti kos Anda ke platform
-                            </p>
-                        </a>
-                    </div>
-
-                    <div sec:authorize="hasRole('ROLE_PENCARI')" class="quick-action-card">
-                        <a href="/kos/search"
-                            class="flex flex-col items-center justify-center p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl text-white h-full">
-                            <i class="fas fa-search text-3xl mb-3"></i>
-                            <span class="text-lg font-medium">Cari Kos</span>
-                            <p class="text-sm text-emerald-100 mt-2 text-center">Temukan kos impian Anda</p>
-                        </a>
-                    </div>
-
-                    <div class="quick-action-card">
-                        <a href="/profile"
-                            class="flex flex-col items-center justify-center p-6 border-2 border-emerald-600 rounded-xl text-emerald-600 bg-white h-full">
-                            <i class="fas fa-user-edit text-3xl mb-3"></i>
-                            <span class="text-lg font-medium">Edit Profil</span>
-                            <p class="text-sm text-gray-600 mt-2 text-center">Perbarui informasi profil Anda</p>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-semibold text-gray-800">Aktivitas Terkini</h3>
-                        <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Lihat Semua</a>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                            <div class="bg-emerald-100 p-3 rounded-full mr-4">
-                                <i class="fas fa-home text-emerald-600"></i>
-                            </div>
-                            <div>
-                                <p class="font-medium" sec:authorize="hasRole('ROLE_PEMILIK')">Kos "Green Valley" baru
-                                    saja dipesan</p>
-                                <p class="font-medium" sec:authorize="hasRole('ROLE_PENCARI')">Anda baru memesan Kos
-                                    "Green Valley"</p>
-                                <p class="text-sm text-gray-500">2 jam yang lalu</p>
-                            </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-8">
                         </div>
 
-                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                            <div class="bg-blue-100 p-3 rounded-full mr-4">
-                                <i class="fas fa-bell text-blue-600"></i>
-                            </div>
-                            <div>
-                                <p class="font-medium">Pembayaran terkonfirmasi</p>
-                                <p class="text-sm text-gray-500">Kemarin, 14:32</p>
-                            </div>
-                        </div>
+                        <form th:action="@{/transactions/{id}/pay(id=${transaction.id})}" method="POST"
+                            enctype="multipart/form-data" th:object="${paymentRequest}" id="paymentForm">
 
-                        <div class="flex items-start p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                            <div class="bg-purple-100 p-3 rounded-full mr-4">
-                                <i class="fas fa-envelope text-purple-600"></i>
+                            <div class="mb-4">
+                                <label for="paymentType" class="block text-sm font-medium text-gray-700">Pilih Jenis
+                                    Pembayaran</label>
+                                <select id="paymentType" th:field="*{paymentType}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                    <option value="down_payment">Bayar DP (Uang Muka)</option>
+                                    <option value="full_payment">Bayar Lunas</option>
+                                </select>
                             </div>
-                            <div>
-                                <p class="font-medium">Pesan baru dari pemilik kos</p>
-                                <p class="text-sm text-gray-500">Kemarin, 10:15</p>
+
+                            <div id="paymentAmountWrapper" class="mb-4">
+                                <label for="paymentAmount" class="block text-sm font-medium text-gray-700">Jumlah DP
+                                    yang Dibayarkan
+                                    (Rp)</label>
+                                <input type="number" id="paymentAmount" th:field="*{paymentAmount}"
+                                    placeholder="Contoh: 500000"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                             </div>
-                        </div>
+
+                            <div class="mb-6">
+                                <label for="paymentProof" class="block text-sm font-medium text-gray-700">Upload Bukti
+                                    Transfer</label>
+                                <input type="file" id="paymentProof" th:field="*{paymentProof}"
+                                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-emerald-50 hover:file:bg-emerald-100"
+                                    required>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700">
+                                Kirim Bukti Pembayaran
+                            </button>
+                        </form>
                     </div>
-                </div>
+                </main>
             </main>
         </div>
     </div>

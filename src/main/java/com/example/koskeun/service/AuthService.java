@@ -46,12 +46,44 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public UserDetailsImpl getCurrentUser() {
+    /**
+     * Method BARU dan DIREKOMENDASIKAN.
+     * Mengambil entitas User asli dari konteks keamanan.
+     * Gunakan method ini di semua service lain (TransactionService, KosService,
+     * etc.).
+     */
+    public User getCurrentUserEntity() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() ||
-                authentication instanceof AnonymousAuthenticationToken) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             return null;
         }
-        return (UserDetailsImpl) authentication.getPrincipal();
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetailsImpl) {
+            // Panggil getter yang sudah kita buat di UserDetailsImpl
+            return ((UserDetailsImpl) principal).getUser();
+        }
+
+        // Fallback jika terjadi kasus yang tidak terduga
+        return null;
+    }
+
+    /**
+     * Method yang mengembalikan objek Principal dari Spring Security.
+     * Berguna untuk otorisasi cepat, tapi jangan gunakan untuk mendapatkan data
+     * entitas.
+     */
+    public UserDetailsImpl getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetailsImpl) {
+            return (UserDetailsImpl) principal;
+        }
+        return null;
     }
 }

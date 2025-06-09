@@ -2,6 +2,9 @@ package com.example.koskeun.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,6 +16,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // --- Kolom ID dan Relasi (Tidak Berubah) ---
     @Column(name = "user_id")
     private Long userId;
 
@@ -22,10 +26,38 @@ public class Transaction {
     @Column(name = "owner_id")
     private Long ownerId;
 
-    @Column(name = "transaction_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date transactionDate;
+    // --- PENAMBAHAN: Kolom untuk Periode Sewa ---
+    @Column(name = "start_date", nullable = false)
+    @Temporal(TemporalType.DATE) // Hanya menyimpan tanggal, tanpa waktu
+    private Date startDate; // Tanggal Mulai Ngekos
 
+    @Column(name = "end_date", nullable = false)
+    @Temporal(TemporalType.DATE) // Hanya menyimpan tanggal, tanpa waktu
+    private Date endDate; // Tanggal Selesai Ngekos
+
+    @Column(name = "duration_in_months")
+    private Integer durationInMonths; // Opsional: untuk menyimpan durasi sewa
+
+    // --- PERUBAHAN NAMA & OTOMATISASI: Kolom Waktu ---
+    @CreationTimestamp // Otomatis diisi saat record dibuat
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt; // Menggantikan book_date, menandakan kapan booking diajukan
+
+    @UpdateTimestamp // Otomatis diisi saat record di-update
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt; // Tambahan: untuk melacak kapan terakhir diubah
+
+    @Column(name = "payment_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date paymentDate; // Menggantikan transaction_date, tanggal bayar pertama
+
+    @Column(name = "reviewed_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date reviewedAt;
+
+    // --- Kolom Pembayaran & Status (Tidak Berubah) ---
     @Column(length = 20)
     private String paymentType;
 
@@ -47,25 +79,21 @@ public class Transaction {
     @Column(length = 20)
     private String status;
 
-    @Column(name = "reviewed_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date reviewedAt;
-
-    @ManyToOne
+    // --- Relasi (Tidak Berubah) ---
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kos_id", insertable = false, updatable = false)
     private Kos kos;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", insertable = false, updatable = false)
     private User owner;
 
     public Transaction() {
-        this.transactionDate = new Date();
-        this.status = "pending"; // Default status
+        this.status = "PENDING"; // Status awal saat booking dibuat
     }
 
     // Getters and Setters
@@ -91,14 +119,6 @@ public class Transaction {
 
     public void setKosId(Long kosId) {
         this.kosId = kosId;
-    }
-
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
     }
 
     public String getPaymentType() {

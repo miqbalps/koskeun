@@ -3,7 +3,10 @@ package com.example.koskeun.controller;
 import com.example.koskeun.model.Kos;
 import com.example.koskeun.model.KosImage;
 import com.example.koskeun.service.KosService;
+import com.example.koskeun.dto.request.BookingRequest;
+import com.example.koskeun.dto.request.KosApprovalRequest;
 import com.example.koskeun.dto.request.KosRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +52,48 @@ public class KosController {
         return "list-kos";
     }
 
+    @GetMapping("/approval")
+    public String approvalKos(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size,
+            Model model) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Kos> kosPage;
+
+        if (query != null && !query.trim().isEmpty()) {
+            kosPage = kosService.searchKos(query, pageRequest);
+        } else {
+            kosPage = kosService.getAllKos(pageRequest);
+        }
+
+        model.addAttribute("kosList", kosPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", kosPage.getTotalPages());
+        model.addAttribute("query", query);
+
+        return "approval-kos";
+    }
+
+    @PostMapping("/approval/{id}")
+    public String processKosApproval(
+            @PathVariable("id") Long kosId,
+            @ModelAttribute("approvalRequest") KosApprovalRequest approvalRequest,
+            RedirectAttributes redirectAttributes) {
+        try {
+            kosService.approvalKos(kosId, approvalRequest);
+            redirectAttributes.addFlashAttribute("success", "Status persetujuan Kos berhasil diperbarui.");
+            // Redirect ke halaman dashboard admin atau halaman detail kos lagi
+            return "redirect:/kos/approval";
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Gunakan logger pada aplikasi production
+            redirectAttributes.addFlashAttribute("error", "Gagal memperbarui status: " + e.getMessage());
+            // Redirect kembali ke halaman sebelumnya (detail kos)
+            return "redirect:/kos/detail/" + kosId;
+        }
+    }
+
     @GetMapping("/detail/{id}")
     public String kosDetail(@PathVariable("id") Long id, Model model) {
         Kos kos = kosService.getKosById(id);
@@ -58,6 +103,7 @@ public class KosController {
         model.addAttribute("kos", kos);
         model.addAttribute("images", images);
         model.addAttribute("similarKos", similarKos);
+        model.addAttribute("bookingRequest", new BookingRequest());
 
         return "detail-kos";
     }
