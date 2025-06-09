@@ -72,7 +72,7 @@
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
                             alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
 
@@ -95,7 +95,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
                         class="sidebar-item active flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -174,7 +174,8 @@
                     enctype="multipart/form-data" class="space-y-6">
                     <div class="bg-white shadow-md rounded-lg p-6">
                         <!-- Basic Information Section -->
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Informasi
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                            Informasi
                             Dasar
                         </h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -190,7 +191,8 @@
                                     th:errors="*{name}"></span>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Harga per Bulan*</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Harga per
+                                    Bulan*</label>
                                 <input type="number" th:field="*{priceMonthly}" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     th:classappend="${#fields.hasErrors('priceMonthly')} ? 'border-red-500'"
@@ -199,7 +201,8 @@
                                     th:errors="*{priceMonthly}"></span>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Kamar Kos*</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Kamar
+                                    Kos*</label>
                                 <input type="text" th:field="*{type}" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     th:classappend="${#fields.hasErrors('type')} ? 'border-red-500'"
@@ -246,7 +249,8 @@
                         </div>
 
                         <!-- Location -->
-                        <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4 pb-2 border-b border-gray-200">Lokasi
+                        <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4 pb-2 border-b border-gray-200">
+                            Lokasi
                         </h2>
                         <div class="mt-2">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap*</label>
@@ -290,13 +294,15 @@
                         </p>
 
                         <!-- Image Upload Sections -->
-                        <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4 pb-2 border-b border-gray-200">Foto Kos
+                        <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4 pb-2 border-b border-gray-200">
+                            Foto Kos
                         </h2>
 
                         <div class="grid md:grid-cols-2 gap-6">
                             <!-- 1. Foto Tampak Depan Bangunan -->
                             <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Depan Bangunan*
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Depan
+                                    Bangunan*
                                     (Maks. 2MB)</label>
                                 <input type="hidden" name="frontBuildingType" value="front_house">
 
@@ -326,7 +332,8 @@
                                                     class="sr-only" accept="image/*">
                                             </label>
                                         </div>
-                                        <p class="text-xs text-gray-500">Format: JPG, PNG (Rasio 16:9 recommended)</p>
+                                        <p class="text-xs text-gray-500">Format: JPG, PNG (Rasio 16:9
+                                            recommended)</p>
                                     </div>
                                 </div>
                                 <div id="frontBuildingPreview" class="image-preview-container"></div>
@@ -334,7 +341,8 @@
 
                             <!-- 2. Foto Tampak Dalam Bangunan -->
                             <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Dalam Bangunan*
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak Dalam
+                                    Bangunan*
                                     (Maks. 2MB)</label>
                                 <input type="hidden" name="interiorType" value="inside_house">
 
@@ -372,7 +380,8 @@
 
                             <!-- 3. Foto Tampak dari Jalan -->
                             <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak dari Jalan
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tampak dari
+                                    Jalan
                                     (Maks. 2MB)</label>
                                 <input type="hidden" name="streetViewType" value="road">
 
@@ -410,7 +419,8 @@
 
                             <!-- 4. Foto Depan Kamar -->
                             <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Depan Kamar* (Maks.
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Depan Kamar*
+                                    (Maks.
                                     2MB)</label>
                                 <input type="hidden" name="roomFrontType" value="front_room">
 
@@ -440,7 +450,8 @@
                                                     accept="image/*">
                                             </label>
                                         </div>
-                                        <p class="text-xs text-gray-500">Tampilkan pintu dan area depan kamar</p>
+                                        <p class="text-xs text-gray-500">Tampilkan pintu dan area depan kamar
+                                        </p>
                                     </div>
                                 </div>
                                 <div id="roomFrontPreview" class="image-preview-container"></div>
@@ -448,7 +459,8 @@
 
                             <!-- 5. Foto Dalam Kamar -->
                             <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Dalam Kamar* (Maks.
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Dalam Kamar*
+                                    (Maks.
                                     2MB)</label>
                                 <input type="hidden" name="roomInteriorType" value="inside_room">
 
@@ -478,7 +490,8 @@
                                                     accept="image/*">
                                             </label>
                                         </div>
-                                        <p class="text-xs text-gray-500">Tampilkan kondisi dalam kamar secara jelas</p>
+                                        <p class="text-xs text-gray-500">Tampilkan kondisi dalam kamar secara
+                                            jelas</p>
                                     </div>
                                 </div>
                                 <div id="roomInteriorPreview" class="image-preview-container"></div>
@@ -486,7 +499,8 @@
 
                             <!-- 6. Foto Kamar Mandi -->
                             <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Kamar Mandi* (Maks.
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Kamar Mandi*
+                                    (Maks.
                                     2MB)</label>
                                 <input type="hidden" name="bathroomType" value="bathroom">
 
@@ -524,7 +538,8 @@
 
                             <!-- Additional Images -->
                             <div class="mt-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tambahan (Maks. 5 foto,
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto Tambahan (Maks.
+                                    5 foto,
                                     2MB per foto)</label>
                                 <input type="hidden" name="additionalImagesType" value="additional">
 
@@ -556,7 +571,8 @@
                                                     class="sr-only" accept="image/*" multiple>
                                             </label>
                                         </div>
-                                        <p class="text-xs text-gray-500">Foto fasilitas tambahan atau sudut lain</p>
+                                        <p class="text-xs text-gray-500">Foto fasilitas tambahan atau sudut lain
+                                        </p>
                                     </div>
                                 </div>
                                 <div id="additionalImagesPreview" class="image-preview-container"></div>

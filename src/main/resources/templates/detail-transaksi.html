@@ -56,7 +56,7 @@
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
                             alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
 
@@ -79,7 +79,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
                         class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -189,7 +189,8 @@
                             <div class="bg-white p-6 rounded-xl shadow">
                                 <h2 class="text-xl font-bold mb-4">Detail Finansial</h2>
                                 <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between"><span class="text-gray-600">Total Harga</span>
+                                    <div class="flex justify-between"><span class="text-gray-600">Total
+                                            Harga</span>
                                         <strong
                                             th:text="'Rp ' + ${#numbers.formatDecimal(transaction.total, 0, 'POINT', 0, 'COMMA')}"></strong>
                                     </div>
@@ -197,8 +198,8 @@
                                             class="text-gray-600">DP Dibayar</span> <span
                                             th:text="'Rp ' + ${#numbers.formatDecimal(transaction.downPayment, 0, 'POINT', 0, 'COMMA')}"></span>
                                     </div>
-                                    <div class="flex justify-between" th:if="${transaction.remainingPayment}"><span
-                                            class="text-gray-600">Pelunasan</span> <span
+                                    <div class="flex justify-between" th:if="${transaction.remainingPayment}">
+                                        <span class="text-gray-600">Pelunasan</span> <span
                                             th:text="'Rp ' + ${#numbers.formatDecimal(transaction.remainingPayment, 0, 'POINT', 0, 'COMMA')}"></span>
                                     </div>
                                     <hr class="my-2">
@@ -214,9 +215,11 @@
                                 <div th:switch="${transaction.status.toUpperCase()}">
 
                                     <div th:case="'PENDING'">
-                                        <p class="text-sm text-gray-600 mb-4">Penyewa telah mengajukan <b>booking</b>.
+                                        <p class="text-sm text-gray-600 mb-4">Penyewa telah mengajukan
+                                            <b>booking</b>.
                                             Harap
-                                            setujui atau tolak permintaan ini.</p>
+                                            setujui atau tolak permintaan ini.
+                                        </p>
                                         <div class="flex gap-4">
                                             <form th:action="@{/transactions/{id}/review(id=${transaction.id})}"
                                                 method="POST" class="w-full">
@@ -258,7 +261,8 @@
                                     </div>
 
                                     <div th:case="*">
-                                        <p class="text-sm text-gray-600">Tidak ada tindakan yang diperlukan untuk status
+                                        <p class="text-sm text-gray-600">Tidak ada tindakan yang diperlukan
+                                            untuk status
                                             ini.</p>
                                     </div>
                                 </div>

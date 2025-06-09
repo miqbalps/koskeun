@@ -107,10 +107,6 @@ public class UserDetailsImpl implements UserDetails {
         return user.getEmergencyContact();
     }
 
-    public String getProfilePhoto() {
-        return user.getProfilePhoto();
-    }
-
     public String getIdCardPhoto() {
         return user.getIdCardPhoto();
     }

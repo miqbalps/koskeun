@@ -56,7 +56,7 @@
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
                             alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
 
@@ -79,7 +79,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
                         class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -169,7 +169,8 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kos</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jenis
+                                        Kos</label>
                                     <select
                                         class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                         name="category">
@@ -255,7 +256,8 @@
                                                 <p class="text-sm text-gray-500 mb-3 flex items-start">
                                                     <i
                                                         class="fas fa-map-marker-alt text-emerald-600 mr-2 mt-1 flex-shrink-0"></i>
-                                                    <span th:text="${kos.address}" class="line-clamp-1">Alamat lengkap
+                                                    <span th:text="${kos.address}" class="line-clamp-1">Alamat
+                                                        lengkap
                                                         kos yang
                                                         mungkin
                                                         cukup panjang</span>

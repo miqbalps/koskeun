@@ -70,7 +70,7 @@
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
                             alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
                     <div sec:authorize="isAnonymous()">
@@ -91,7 +91,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
                         class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -141,7 +141,7 @@
             <!-- Top Bar -->
             <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
                 style="width: calc(100% - 16rem)">
-                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+                <h2 class="text-xl font-bold text-gray-800">Pengajuan Sewa</h2>
                 <div class="flex items-center space-x-4">
                     <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
                         <i class="fas fa-bell"></i>
@@ -180,7 +180,8 @@
                             <div class="flex-grow flex flex-col justify-between">
                                 <div>
                                     <div class="flex justify-between items-start" th:switch="${trx.status}">
-                                        <h3 class="text-lg font-bold text-gray-800" th:text="${trx.kos.name}">Nama Kos
+                                        <h3 class="text-lg font-bold text-gray-800" th:text="${trx.kos.name}">
+                                            Nama Kos
                                         </h3>
                                         <span
                                             class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-800"
@@ -221,8 +222,10 @@
                                 <div class="mt-3 p-3 bg-gray-50 rounded-lg text-center compact-text">
                                     <th:block th:switch="${trx.status}">
                                         <div th:case="'PENDING'">
-                                            <p class="text-gray-700 font-medium">Menunggu Persetujuan Pemilik Kos</p>
-                                            <p class="text-xs text-gray-500">Pemilik akan meninjau permintaan booking
+                                            <p class="text-gray-700 font-medium">Menunggu Persetujuan Pemilik
+                                                Kos</p>
+                                            <p class="text-xs text-gray-500">Pemilik akan meninjau permintaan
+                                                booking
                                                 Anda.</p>
                                         </div>
                                         <div th:case="'WAITING_PAYMENT'">
@@ -233,7 +236,8 @@
                                             </a>
                                         </div>
                                         <div th:case="'WAITING_CONFIRMATION'">
-                                            <p class="text-gray-700 font-medium">Menunggu Konfirmasi Pembayaran</p>
+                                            <p class="text-gray-700 font-medium">Menunggu Konfirmasi Pembayaran
+                                            </p>
                                             <p class="text-xs text-gray-500">Pemilik sedang memverifikasi bukti
                                                 pembayaran Anda.</p>
                                         </div>
@@ -246,11 +250,13 @@
                                         </div>
                                         <div th:case="'COMPLETED'">
                                             <p class="text-green-700 font-bold">Lunas & Selesai</p>
-                                            <p class="text-xs text-gray-500">Selamat menikmati kos baru Anda!</p>
+                                            <p class="text-xs text-gray-500">Selamat menikmati kos baru Anda!
+                                            </p>
                                         </div>
                                         <div th:case="'REJECTED'">
                                             <p class="text-red-700 font-bold">Booking Ditolak</p>
-                                            <p class="text-xs text-gray-500">Silakan cari kos lain atau hubungi pemilik.
+                                            <p class="text-xs text-gray-500">Silakan cari kos lain atau hubungi
+                                                pemilik.
                                             </p>
                                         </div>
                                     </th:block>

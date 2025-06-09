@@ -17,51 +17,54 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+        @Autowired
+        private UserDetailsServiceImpl userDetailsService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    @SuppressWarnings("deprecation")
-    public DaoAuthenticationProvider authenticationProvider() {
-        var provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
-    }
+        @Bean
+        @SuppressWarnings("deprecation")
+        public DaoAuthenticationProvider authenticationProvider() {
+                var provider = new DaoAuthenticationProvider();
+                provider.setPasswordEncoder(passwordEncoder());
+                provider.setUserDetailsService(userDetailsService);
+                return provider;
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index", "/login", "/register", "/error",
-                                "/css/**", "/js/**", "/images/**", "/webjars/**", "favicon.ico")
-                        .permitAll()
-                        .requestMatchers("/kos/search", "/kos/detail/**").permitAll()
-                        .requestMatchers("/kos/my/**", "/kos/add/**", "/kos/edit/**").hasRole("PEMILIK")
-                        .requestMatchers("/dashboard", "/profile").authenticated()
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/auth/login")
-                        .defaultSuccessUrl("/dashboard")
-                        .failureUrl("/login?error=true")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/auth/logout")
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .permitAll())
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .expiredUrl("/login?expired=true"));
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/", "/index", "/login", "/register", "/auth/register",
+                                                                "/error",
+                                                                "/css/**", "/js/**", "/images/**", "/webjars/**",
+                                                                "favicon.ico")
+                                                .permitAll()
+                                                .requestMatchers("/kos/search", "/kos/detail/**").permitAll()
+                                                .requestMatchers("/kos/my/**", "/kos/add/**", "/kos/edit/**")
+                                                .hasRole("PEMILIK")
+                                                .requestMatchers("/dashboard", "/profile").authenticated()
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .loginProcessingUrl("/auth/login")
+                                                .defaultSuccessUrl("/dashboard")
+                                                .failureUrl("/login?error=true")
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutUrl("/auth/logout")
+                                                .logoutSuccessUrl("/login?logout=true")
+                                                .invalidateHttpSession(true)
+                                                .clearAuthentication(true)
+                                                .permitAll())
+                                .sessionManagement(session -> session
+                                                .maximumSessions(1)
+                                                .expiredUrl("/login?expired=true"));
 
-        return http.build();
-    }
+                return http.build();
+        }
 }

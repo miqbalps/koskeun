@@ -56,7 +56,7 @@
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
                             alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
 
@@ -80,7 +80,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
                         class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -160,7 +160,8 @@
                             class="flex flex-col items-center justify-center p-6 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl text-white h-full">
                             <i class="fas fa-plus-circle text-3xl mb-3"></i>
                             <span class="text-lg font-medium">Tambah Kos Baru</span>
-                            <p class="text-sm text-emerald-100 mt-2 text-center">Tambahkan properti kos Anda ke platform
+                            <p class="text-sm text-emerald-100 mt-2 text-center">Tambahkan properti kos Anda ke
+                                platform
                             </p>
                         </a>
                     </div>
@@ -188,7 +189,8 @@
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-semibold text-gray-800">Aktivitas Terkini</h3>
-                        <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Lihat Semua</a>
+                        <a href="#" class="text-emerald-600 hover:text-emerald-800 text-sm font-medium">Lihat
+                            Semua</a>
                     </div>
 
                     <div class="space-y-4">
@@ -197,9 +199,11 @@
                                 <i class="fas fa-home text-emerald-600"></i>
                             </div>
                             <div>
-                                <p class="font-medium" sec:authorize="hasRole('ROLE_PEMILIK')">Kos "Green Valley" baru
+                                <p class="font-medium" sec:authorize="hasRole('ROLE_PEMILIK')">Kos "Green
+                                    Valley" baru
                                     saja dipesan</p>
-                                <p class="font-medium" sec:authorize="hasRole('ROLE_PENCARI')">Anda baru memesan Kos
+                                <p class="font-medium" sec:authorize="hasRole('ROLE_PENCARI')">Anda baru memesan
+                                    Kos
                                     "Green Valley"</p>
                                 <p class="text-sm text-gray-500">2 jam yang lalu</p>
                             </div>

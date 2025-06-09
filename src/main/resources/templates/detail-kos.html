@@ -55,7 +55,7 @@
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
                             alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
 
@@ -78,7 +78,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
                         class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -165,7 +165,8 @@
                     <!-- Property Header -->
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8">
                         <div class="max-w-3xl">
-                            <h1 class="text-3xl font-bold text-gray-900" th:text="${kos.name}">Kos Green Valley</h1>
+                            <h1 class="text-3xl font-bold text-gray-900" th:text="${kos.name}">Kos Green Valley
+                            </h1>
                             <div class="flex items-center mt-2">
                                 <i class="fas fa-map-marker-alt text-emerald-600 mr-2"></i>
                                 <span class="text-gray-600" th:text="${kos.address}">Jl. Melati No. 123, Jakarta
@@ -275,7 +276,8 @@
                             <!-- Property Details -->
                             <div class="mt-8 bg-white rounded-xl shadow-md p-6">
                                 <h2 class="text-xl font-bold text-gray-900 mb-4">Deskripsi Kos</h2>
-                                <p class="text-gray-600 mb-6" th:text="${kos.description}">
+                                <p class="text-gray-600 mb-6 whitespace-pre-line text-justify"
+                                    th:text="${kos.description}">
                                     Kos Green Valley merupakan kos eksklusif dengan fasilitas lengkap di kawasan
                                     strategis Jakarta
                                     Selatan.
@@ -286,8 +288,11 @@
                                 </p>
 
                                 <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Lokasi</h2>
-                                <p class="text-gray-600" th:text="${kos.address}">Jl. Melati No. 123, Jakarta
-                                    Selatan</p>
+                                <div class="flex items-center text-gray-600 gap-2 mb-2">
+                                    <i class="fas fa-map-marker-alt text-emerald-600"></i>
+                                    <p class="text-gray-600" th:text="${kos.address}">Jl. Melati No. 123, Jakarta
+                                        Selatan</p>
+                                </div>
                                 <div class="rounded-xl overflow-hidden h-64 mb-4">
                                     <!-- Map Embed -->
                                     <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0"
@@ -296,8 +301,8 @@
                                         class="border-0">
                                     </iframe>
                                 </div>
-                                <div class="flex items-center text-gray-600">
-                                    <i class="fas fa-info-circle text-emerald-600 mr-2"></i>
+                                <div class="flex items-center text-gray-600 gap-2">
+                                    <i class="fas fa-info-circle text-emerald-600"></i>
                                     <span th:text="'Lat: ' + ${kos.latitude} + ', Long: ' + ${kos.longitude}">Lat:
                                         -6.229728, Long:
                                         106.689431</span>
@@ -396,18 +401,19 @@
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-gray-600">Jenis</span>
-                                        <span class="font-medium" th:text="${kos.category}">Eksklusif</span>
+                                        <span class="font-medium capitalize" th:text="${kos.category}">Eksklusif</span>
                                     </div>
-                                    <div class="flex justify-between">
+                                    <!-- <div class="flex justify-between">
                                         <span class="text-gray-600">Luas Kamar</span>
                                         <span class="font-medium">3x4 m²</span>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                 <div sec:authorize="hasRole('ROLE_PENCARI')">
 
                                     <div class="mt-4">
-                                        <h4 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">Ajukan Sewa
+                                        <h4 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">
+                                            Ajukan Sewa
                                         </h4>
 
                                         <form th:action="@{/transactions/book/{kosId}(kosId=${kos.id})}" method="POST"
@@ -415,7 +421,8 @@
 
                                             <div>
                                                 <label for="startDate"
-                                                    class="block text-sm font-medium text-gray-700">Tanggal Mulai
+                                                    class="block text-sm font-medium text-gray-700">Tanggal
+                                                    Mulai
                                                     Ngekos</label>
                                                 <input type="date" id="startDate" th:field="*{startDate}"
                                                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
@@ -466,7 +473,8 @@
 
                                 <div sec:authorize="isAnonymous()" class="mt-4 text-center bg-gray-100 p-4 rounded-lg">
                                     <p class="text-gray-700">Silakan <a th:href="@{/login}"
-                                            class="text-emerald-600 font-bold hover:underline">Masuk</a> sebagai penyewa
+                                            class="text-emerald-600 font-bold hover:underline">Masuk</a> sebagai
+                                        penyewa
                                         untuk
                                         mengajukan sewa.</p>
                                 </div>
@@ -477,7 +485,8 @@
                                         <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Owner"
                                             class="w-12 h-12 rounded-full mr-3">
                                         <div>
-                                            <h4 class="font-medium" th:text="${kos.owner.fullName}">Ibu Siti</h4>
+                                            <h4 class="font-medium" th:text="${kos.owner.fullName}">Ibu Siti
+                                            </h4>
                                             <p class="text-sm text-gray-600">Pemilik Kos</p>
                                         </div>
                                     </div>
@@ -499,9 +508,11 @@
             class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 transform transition-all" id="modal-content">
                 <div class="flex justify-between items-center border-b pb-3 mb-4">
-                    <h2 sec:authorize="hasRole('ROLE_PENCARI')" class="text-2xl font-bold text-gray-800">Pengajuan Sewa
+                    <h2 sec:authorize="hasRole('ROLE_PENCARI')" class="text-2xl font-bold text-gray-800">
+                        Pengajuan Sewa
                     </h2>
-                    <h2 sec:authorize="hasRole('ROLE_PEMILIK')" class="text-2xl font-bold text-gray-800">Konfirmasi
+                    <h2 sec:authorize="hasRole('ROLE_PEMILIK')" class="text-2xl font-bold text-gray-800">
+                        Konfirmasi
                         Hapus Kos</h2>
                     <h2 sec:authorize="hasRole('ROLE_ADMIN')" class="text-2xl font-bold text-gray-800">Formulir
                         Persetujuan Kos</h2>
@@ -580,7 +591,8 @@
                         </div>
 
                         <div>
-                            <label for="durationInMonths" class="block text-sm font-medium text-gray-700">Durasi Sewa
+                            <label for="durationInMonths" class="block text-sm font-medium text-gray-700">Durasi
+                                Sewa
                                 (Bulan)</label>
                             <select id="durationInMonths" th:field="*{durationInMonths}"
                                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
@@ -601,9 +613,11 @@
                 <div sec:authorize="hasRole('ROLE_PEMILIK')">
                     <div class="text-center mb-6">
                         <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-4"></i>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Apakah Anda yakin ingin menghapus kos ini?
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Apakah Anda yakin ingin menghapus
+                            kos ini?
                         </h4>
-                        <p class="text-gray-600">Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data
+                        <p class="text-gray-600">Tindakan ini tidak dapat dibatalkan dan akan menghapus semua
+                            data
                             terkait kos ini.</p>
                     </div>
 
@@ -619,7 +633,8 @@
                             <i class="fas fa-map-marker-alt text-emerald-600"></i>
                             <div>
                                 <p class="text-sm text-gray-500">Alamat</p>
-                                <p class="text-gray-700 font-medium" th:text="${kos.address}">Jl. Melati No. 123</p>
+                                <p class="text-gray-700 font-medium" th:text="${kos.address}">Jl. Melati No. 123
+                                </p>
                             </div>
                         </div>
                     </div>

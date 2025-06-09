@@ -56,7 +56,7 @@
                 <!-- User Profile -->
                 <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${#authentication.principal.profilePhoto ?: 'https://randomuser.me/api/portraits/men/32.jpg'}"
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
                             alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
 
@@ -80,7 +80,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
                         class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -157,7 +157,8 @@
                             enctype="multipart/form-data" th:object="${paymentRequest}" id="paymentForm">
 
                             <div class="mb-4">
-                                <label for="paymentType" class="block text-sm font-medium text-gray-700">Pilih Jenis
+                                <label for="paymentType" class="block text-sm font-medium text-gray-700">Pilih
+                                    Jenis
                                     Pembayaran</label>
                                 <select id="paymentType" th:field="*{paymentType}"
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
@@ -176,7 +177,8 @@
                             </div>
 
                             <div class="mb-6">
-                                <label for="paymentProof" class="block text-sm font-medium text-gray-700">Upload Bukti
+                                <label for="paymentProof" class="block text-sm font-medium text-gray-700">Upload
+                                    Bukti
                                     Transfer</label>
                                 <input type="file" id="paymentProof" th:field="*{paymentProof}"
                                     class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-emerald-50 hover:file:bg-emerald-100"

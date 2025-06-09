@@ -25,11 +25,11 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public String register(@RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String fullName,
-            @RequestParam String phoneNumber,
-            @RequestParam String role,
+    public String register(@RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("fullName") String fullName,
+            @RequestParam("phoneNumber") String phoneNumber,
+            @RequestParam("role") String role,
             RedirectAttributes redirectAttributes) {
         try {
             authService.register(email, password, fullName, phoneNumber, role);

@@ -56,9 +56,6 @@ public class User {
     @JoinColumn(name = "role_id", insertable = false, updatable = false)
     private Role role;
 
-    @Column(name = "profile_photo", columnDefinition = "text")
-    private String profilePhoto;
-
     @Column(name = "id_card_photo", columnDefinition = "text")
     private String idCardPhoto;
 
@@ -177,14 +174,6 @@ public class User {
 
     public void setRoleId(Long roleId) {
         this.roleId = roleId;
-    }
-
-    public String getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(String profilePhoto) {
-        this.profilePhoto = profilePhoto;
     }
 
     public String getIdCardPhoto() {
