@@ -198,6 +198,10 @@
                                             class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800"
                                             th:case="'COMPLETED'">SELESAI</span>
                                         </span>
+                                        <span
+                                            class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"
+                                            th:case="'REJECTED'">DITOLAK</span>
+                                        </span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">Diajukan pada: <span
                                             th:text="${#dates.format(trx.createdAt, 'dd MMM yyyy')}"></span></p>

@@ -214,15 +214,15 @@
                                 <div th:switch="${transaction.status.toUpperCase()}">
 
                                     <div th:case="'PENDING'">
-                                        <p class="text-sm text-gray-600 mb-4">Penyewa telah mengajukan booking. Harap
+                                        <p class="text-sm text-gray-600 mb-4">Penyewa telah mengajukan <b>booking</b>.
+                                            Harap
                                             setujui atau tolak permintaan ini.</p>
                                         <div class="flex gap-4">
                                             <form th:action="@{/transactions/{id}/review(id=${transaction.id})}"
                                                 method="POST" class="w-full">
                                                 <input type="hidden" name="approve" value="true" />
                                                 <button type="submit"
-                                                    class="w-full text-white bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-lg">Setujui
-                                                    Booking</button>
+                                                    class="w-full text-white bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-lg">Setujui</button>
                                             </form>
                                             <form th:action="@{/transactions/{id}/review(id=${transaction.id})}"
                                                 method="POST" class="w-full">
