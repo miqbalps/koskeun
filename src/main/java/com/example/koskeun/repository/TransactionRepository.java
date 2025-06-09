@@ -19,4 +19,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUserIdAndStatus(Long userId, String status);
 
     List<Transaction> findByKosIdAndStatus(Long kosId, String status);
+
+    boolean existsByKosIdAndStatus(Long kosId, String status);
+
+    List<Transaction> findByKosIdAndStatusIn(Long kosId, List<String> statuses, Sort sort);
 }

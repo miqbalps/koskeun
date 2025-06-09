@@ -342,7 +342,7 @@
                                 <div th:if="${existingImages.containsKey('inside_house')}" class="mb-4">
                                     <p class="text-sm text-gray-600 mb-2">Foto saat ini:</p>
                                     <div class="existing-image">
-                                        <img th:src="@{'/uploads/kos-images/' + ${existingImages.get('front_house')[0].url}}"
+                                        <img th:src="@{'/uploads/kos-images/' + ${existingImages.get('inside_house')[0].url}}"
                                             alt="Foto Dalam Bangunan">
                                     </div>
                                 </div>
@@ -532,9 +532,9 @@
                                 <div th:if="${existingImages.containsKey('additional')}" class="mb-4">
                                     <p class="text-sm text-gray-600 mb-2">Foto saat ini:</p>
                                     <div class="image-preview-container">
-                                        <div th:each="img : ${existingImages.get('additional')}" class="existing-image">
-                                            <img th:src="@{'/uploads/kos-images/' + ${img.url}}"
-                                                th:alt="${'Foto Tambahan ' + imgStat.index}">
+                                        <div class="existing-image">
+                                            <img th:src="@{'/uploads/kos-images/' + ${existingImages.get('additional')[0].url}}"
+                                                alt="Foto Tambahan">
                                         </div>
                                     </div>
                                 </div>

@@ -252,7 +252,7 @@ public class KosController {
             @RequestParam(value = "roomFront", required = false) MultipartFile roomFrontFile,
             @RequestParam(value = "roomInterior", required = false) MultipartFile roomInteriorFile,
             @RequestParam(value = "bathroom", required = false) MultipartFile bathroomFile,
-            @RequestParam(value = "additionalImages", required = false) MultipartFile[] additionalImageFiles,
+            @RequestParam(value = "additionalImages", required = false) MultipartFile additionalImageFiles,
             RedirectAttributes redirectAttributes,
             Model model // Tambahkan Model untuk mengembalikan data jika validasi gagal
     ) {
@@ -272,10 +272,11 @@ public class KosController {
                     "road", streetViewFile,
                     "front_room", roomFrontFile,
                     "inside_room", roomInteriorFile,
-                    "bathroom", bathroomFile);
+                    "bathroom", bathroomFile,
+                    "additional", additionalImageFiles);
 
             // Panggil service update yang sudah diperbarui
-            kosService.updateKosAndImages(kosId, kosRequest, singleImageMap, additionalImageFiles);
+            kosService.updateKosAndImages(kosId, kosRequest, singleImageMap);
 
             redirectAttributes.addFlashAttribute("success", "Kos berhasil diperbarui.");
             return "redirect:/kos/detail/" + kosId;
@@ -302,6 +303,13 @@ public class KosController {
     @PostMapping("/delete/{id}")
     public String deleteKos(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
+            // Check if kos has any linked transactions
+            if (kosService.hasActiveTransactions(id)) {
+                redirectAttributes.addFlashAttribute("error",
+                        "Tidak dapat menghapus kos karena memiliki transaksi aktif");
+                return "redirect:/kos/detail/" + id;
+            }
+
             kosService.deleteKos(id);
             redirectAttributes.addFlashAttribute("success", "Kos berhasil dihapus");
             return "redirect:/kos/my";

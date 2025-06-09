@@ -142,6 +142,15 @@
 
             <!-- Page Content -->
             <main class="p-6 mt-16">
+                <!-- Setelah tag h1 "Tambah Kos Baru" -->
+                <div th:if="${success}"
+                    class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded-lg">
+                    <span th:text="${success}"></span>
+                </div>
+
+                <div th:if="${error}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-lg">
+                    <span th:text="${error}"></span>
+                </div>
                 <!-- Main Content -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <!-- Breadcrumb -->
@@ -442,12 +451,14 @@
                                         Sewa Sekarang
                                     </button> -->
 
-                                    <button th:onclick="'window.location.href=\'' + @{'/kos/edit/' + ${kos.id}} + '\''"
-                                        class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity mb-4">
-                                        Ubah Data
-                                    </button>
+                                    <form th:action="@{'/kos/edit/' + ${kos.id}}" method="POST">
+                                        <button type="submit"
+                                            class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity mb-4">
+                                            Ubah Data
+                                        </button>
+                                    </form>
 
-                                    <button
+                                    <button id="open-modal-button"
                                         class="w-full border border-red-600 text-red-600 py-3 rounded-lg font-medium hover:bg-red-50 transition-colors">
                                         Hapus
                                     </button>
@@ -490,8 +501,8 @@
                 <div class="flex justify-between items-center border-b pb-3 mb-4">
                     <h2 sec:authorize="hasRole('ROLE_PENCARI')" class="text-2xl font-bold text-gray-800">Pengajuan Sewa
                     </h2>
-                    <h2 sec:authorize="hasRole('ROLE_PEMILIK')" class="text-2xl font-bold text-gray-800">Formulir
-                        Pembayaran Sewa</h2>
+                    <h2 sec:authorize="hasRole('ROLE_PEMILIK')" class="text-2xl font-bold text-gray-800">Konfirmasi
+                        Hapus Kos</h2>
                     <h2 sec:authorize="hasRole('ROLE_ADMIN')" class="text-2xl font-bold text-gray-800">Formulir
                         Persetujuan Kos</h2>
                     <button id="close-modal-button" class="text-gray-500 hover:text-gray-800">&times;</button>
@@ -587,119 +598,43 @@
                     </form>
                 </div>
 
-
                 <div sec:authorize="hasRole('ROLE_PEMILIK')">
-                    <div class="mb-6 bg-gray-50 rounded-lg p-4">
-                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Informasi Penyewa</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-user text-emerald-600"></i>
-                                <div>
-                                    <p class="text-sm text-gray-500">Nama Lengkap</p>
-                                    <p class="text-gray-700 font-medium"
-                                        th:text="${#authentication.principal.fullName}">
-                                        John
-                                        Doe</p>
-                                </div>
+                    <div class="text-center mb-6">
+                        <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-4"></i>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Apakah Anda yakin ingin menghapus kos ini?
+                        </h4>
+                        <p class="text-gray-600">Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data
+                            terkait kos ini.</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg mb-6">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <i class="fas fa-home text-emerald-600"></i>
+                            <div>
+                                <p class="text-sm text-gray-500">Nama Kos</p>
+                                <p class="text-gray-700 font-medium" th:text="${kos.name}">Kos Green Valley</p>
                             </div>
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-envelope text-emerald-600"></i>
-                                <div>
-                                    <p class="text-sm text-gray-500">Email</p>
-                                    <p class="text-gray-700 font-medium" th:text="${#authentication.principal.email}">
-                                        johndoe@gmail.com</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-phone text-emerald-600"></i>
-                                <div>
-                                    <p class="text-sm text-gray-500">Telepon</p>
-                                    <p class="text-gray-700 font-medium"
-                                        th:text="${#authentication.principal.phoneNumber}">
-                                        0812-3456-7890</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-venus-mars text-emerald-600"></i>
-                                <div>
-                                    <p class="text-sm text-gray-500">Jenis Kelamin</p>
-                                    <p class="text-gray-700 font-medium" th:text="${#authentication.principal.gender}">
-                                        Laki-laki
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-briefcase text-emerald-600"></i>
-                                <div>
-                                    <p class="text-sm text-gray-500">Pekerjaan</p>
-                                    <p class="text-gray-700 font-medium"
-                                        th:text="${#authentication.principal.occupation}">
-                                        Mahasiswa</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-building text-emerald-600"></i>
-                                <div>
-                                    <p class="text-sm text-gray-500">Institusi</p>
-                                    <p class="text-gray-700 font-medium"
-                                        th:text="${#authentication.principal.institutionName}">
-                                        Itenas</p>
-                                </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-map-marker-alt text-emerald-600"></i>
+                            <div>
+                                <p class="text-sm text-gray-500">Alamat</p>
+                                <p class="text-gray-700 font-medium" th:text="${kos.address}">Jl. Melati No. 123</p>
                             </div>
                         </div>
                     </div>
 
-                    <form th:action="@{'/transactions/rent/' + ${kos.id}}" method="POST" enctype="multipart/form-data">
-
-                        <div class="mb-4">
-                            <label for="paymentType" class="block text-sm font-medium text-gray-700 mb-1">Jenis
-                                Pembayaran</label>
-                            <select id="paymentType" name="paymentType"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
-                                <option value="tunai">Tunai</option>
-                                <option value="transfer">Transfer</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="remainingPayment" class="block text-sm font-medium text-gray-700 mb-1">Jumlah
-                                Pembayaran
-                                (Rp)</label>
-                            <input type="number" id="remainingPayment" name="remainingPayment"
-                                placeholder="Contoh: 500000"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
-                                required>
-                            <p class="text-xs text-gray-500 mt-1">Total harga sewa:
-                                <span
-                                    th:text="'Rp ' + ${#numbers.formatDecimal(kos.priceMonthly, 0, 'POINT', 0, 'COMMA')}"></span>
-                            </p>
-                        </div>
-
-                        <div class="mb-6">
-                            <label for="rpProofUrl" class="block text-sm font-medium text-gray-700 mb-1">Upload Bukti
-                                Pembayaran</label>
-                            <input type="file" id="rpProofUrl" name="rpProofUrl"
-                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
-                                accept="image/png, image/jpeg, image/jpg" required>
-
-                            <div class="mt-4">
-                                <img id="image-preview" src="" alt="Pratinjau Gambar"
-                                    class="w-full h-auto rounded-lg hidden max-h-64 object-contain" />
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end space-x-3">
-                            <button type="button" id="cancel-modal-button"
-                                class="px-6 py-2 rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200">
-                                Batal
-                            </button>
-                            <button type="submit"
-                                class="px-6 py-2 rounded-lg text-white bg-emerald-600 hover:bg-emerald-700">
-                                Kirim
-                            </button>
-                        </div>
+                    <form th:action="@{'/kos/delete/' + ${kos.id}}" method="POST" class="flex justify-end space-x-3">
+                        <button type="button" id="cancel-modal-button"
+                            class="px-6 py-2 rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-6 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700">
+                            Hapus
+                        </button>
                     </form>
                 </div>
+
                 <div sec:authorize="hasRole('ROLE_ADMIN')">
                     <div class="mb-6 bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-900 mb-4">Informasi Pemilik</h4>

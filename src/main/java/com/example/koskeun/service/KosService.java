@@ -6,6 +6,7 @@ import com.example.koskeun.model.Kos;
 import com.example.koskeun.model.KosImage;
 import com.example.koskeun.repository.KosImageRepository;
 import com.example.koskeun.repository.KosRepository;
+import com.example.koskeun.repository.TransactionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -39,6 +40,9 @@ public class KosService {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     private final Path imageStorageLocation = Paths.get("uploads/kos-images");
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -236,8 +240,7 @@ public class KosService {
     }
 
     @Transactional
-    public Kos updateKosAndImages(Long kosId, KosRequest kosDetails, Map<String, MultipartFile> singleImages,
-            MultipartFile[] additionalImages) {
+    public Kos updateKosAndImages(Long kosId, KosRequest kosDetails, Map<String, MultipartFile> singleImages) {
         // 1. Ambil data Kos yang ada & validasi kepemilikan
         Kos existingKos = kosRepository.findById(kosId)
                 .orElseThrow(() -> new EntityNotFoundException("Kos tidak ditemukan"));
@@ -273,16 +276,29 @@ public class KosService {
         });
 
         // 4. Proses gambar tambahan (jika ada file baru yang diupload)
-        if (additionalImages != null && additionalImages.length > 0) {
-            for (MultipartFile imageFile : additionalImages) {
-                if (imageFile != null && !imageFile.isEmpty()) {
-                    // Cukup tambahkan sebagai gambar "additional"
-                    saveSingleImage(existingKos, imageFile, "additional");
-                }
-            }
-        }
+        // if (additionalImages != null && additionalImages.length > 0) {
+        // for (MultipartFile imageFile : additionalImages) {
+        // if (imageFile != null && !imageFile.isEmpty()) {
+        // // Cukup tambahkan sebagai gambar "additional"
+        // saveSingleImage(existingKos, imageFile, "additional");
+        // }
+        // }
+        // }
 
         return kosRepository.save(existingKos);
+    }
+
+    public boolean hasActiveTransactions(Long kosId) {
+        // Kita asumsikan status untuk sewa yang sedang berjalan adalah "ACTIVE".
+        // Anda mungkin juga perlu memasukkan "APPROVED" jika booking yang sudah
+        // disetujui
+        // tapi belum dimulai juga dianggap sebagai transaksi aktif.
+        // Spring Data JPA akan membuat query yang sangat efisien untuk ini.
+        return transactionRepository.existsByKosIdAndStatus(kosId, "DOWN_PAYMENT") ||
+                transactionRepository.existsByKosIdAndStatus(kosId, "WAITING_PAYMENT") ||
+                transactionRepository.existsByKosIdAndStatus(kosId, "WAITING_CONFIRMATION") ||
+                transactionRepository.existsByKosIdAndStatus(kosId, "COMPLETED")
+                || transactionRepository.existsByKosIdAndStatus(kosId, "PENDING");
     }
 
     private void saveSingleImage(Kos kos, MultipartFile image, String type) {
