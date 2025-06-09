@@ -1,6 +1,7 @@
 package com.example.koskeun.service;
 
 import com.example.koskeun.dto.request.KosApprovalRequest;
+import com.example.koskeun.dto.request.KosRequest;
 import com.example.koskeun.model.Kos;
 import com.example.koskeun.model.KosImage;
 import com.example.koskeun.repository.KosImageRepository;
@@ -20,9 +21,11 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -230,6 +233,87 @@ public class KosService {
                 }
             }
         }
+    }
+
+    @Transactional
+    public Kos updateKosAndImages(Long kosId, KosRequest kosDetails, Map<String, MultipartFile> singleImages,
+            MultipartFile[] additionalImages) {
+        // 1. Ambil data Kos yang ada & validasi kepemilikan
+        Kos existingKos = kosRepository.findById(kosId)
+                .orElseThrow(() -> new EntityNotFoundException("Kos tidak ditemukan"));
+
+        var currentUser = authService.getCurrentUserEntity();
+        if (currentUser == null || !existingKos.getOwnerId().equals(currentUser.getId())) {
+            throw new SecurityException("Anda tidak berhak memperbarui kos ini.");
+        }
+
+        // 2. Update data teks dari DTO
+        existingKos.setName(kosDetails.getName());
+        existingKos.setPriceMonthly(kosDetails.getPriceMonthly());
+        existingKos.setDescription(kosDetails.getDescription());
+        existingKos.setType(kosDetails.getType());
+        existingKos.setCategory(kosDetails.getCategory());
+        existingKos.setAddress(kosDetails.getAddress());
+        existingKos.setLatitude(kosDetails.getLatitude());
+        existingKos.setLongitude(kosDetails.getLongitude());
+        existingKos.setStatus(kosDetails.getStatus());
+
+        // 3. Proses gambar tunggal (jika ada file baru yang diupload)
+        singleImages.forEach((type, file) -> {
+            if (file != null && !file.isEmpty()) {
+                // Hapus gambar lama dengan tipe yang sama
+                kosImageRepository.findByKosIdAndType(kosId, type).forEach(oldImage -> {
+                    deleteImageFile(oldImage.getUrl());
+                    kosImageRepository.delete(oldImage);
+                });
+
+                // Simpan gambar baru
+                saveSingleImage(existingKos, file, type);
+            }
+        });
+
+        // 4. Proses gambar tambahan (jika ada file baru yang diupload)
+        if (additionalImages != null && additionalImages.length > 0) {
+            for (MultipartFile imageFile : additionalImages) {
+                if (imageFile != null && !imageFile.isEmpty()) {
+                    // Cukup tambahkan sebagai gambar "additional"
+                    saveSingleImage(existingKos, imageFile, "additional");
+                }
+            }
+        }
+
+        return kosRepository.save(existingKos);
+    }
+
+    private void saveSingleImage(Kos kos, MultipartFile image, String type) {
+        // Validasi file individual
+        validateSingleImage(image);
+
+        String newFilename;
+        try {
+            String originalFilename = image.getOriginalFilename();
+            String extension = getFileExtension(originalFilename);
+            validateFileExtension(extension);
+            newFilename = UUID.randomUUID().toString() + extension;
+
+            Path targetLocation = imageStorageLocation.resolve(newFilename);
+            Files.copy(image.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            KosImage kosImage = new KosImage();
+            kosImage.setKosId(kos.getId());
+            kosImage.setUrl(newFilename);
+            kosImage.setType(type);
+            kosImageRepository.save(kosImage);
+        } catch (Exception e) {
+            throw new RuntimeException("Gagal memproses gambar: " + image.getOriginalFilename(), e);
+        }
+    }
+
+    private void validateSingleImage(MultipartFile image) {
+        if (image.getSize() > MAX_FILE_SIZE) {
+            throw new RuntimeException("File " + image.getOriginalFilename() + " terlalu besar. Maksimal 10MB");
+        }
+        // ... validasi lainnya bisa ditambahkan di sini ...
     }
 
     private void deleteImageFile(String filename) {

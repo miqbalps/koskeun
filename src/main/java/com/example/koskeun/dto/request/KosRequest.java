@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 public class KosRequest {
@@ -34,5 +36,10 @@ public class KosRequest {
     @NotNull(message = "Longitude tidak boleh kosong")
     private BigDecimal longitude;
 
-    private String status = "available";
+    @NotNull(message = "Status tidak boleh kosong")
+    private String status;
+
+    public List<Object> getImagesByType(String type) {
+        return Collections.emptyList();
+    }
 }

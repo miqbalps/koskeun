@@ -21,6 +21,8 @@ import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/kos")
@@ -77,7 +79,7 @@ public class KosController {
 
     @PostMapping("/approval/{id}")
     public String processKosApproval(
-            @PathVariable("id") Long kosId,
+            @PathVariable("kosId") Long kosId,
             @ModelAttribute("approvalRequest") KosApprovalRequest approvalRequest,
             RedirectAttributes redirectAttributes) {
         try {
@@ -217,34 +219,84 @@ public class KosController {
     @GetMapping("/edit/{id}")
     public String showEditKosForm(@PathVariable("id") Long id, Model model) {
         Kos kos = kosService.getKosById(id);
-        List<KosImage> images = kosService.getKosImages(id);
 
-        model.addAttribute("kos", convertToKosRequest(kos));
-        model.addAttribute("images", images);
+        // Ambil semua gambar yang terkait dengan Kos ini
+        List<KosImage> allImages = kosService.getKosImages(id);
+
+        // PERBAIKAN: Kelompokkan gambar berdasarkan tipenya menggunakan Map
+        Map<String, List<KosImage>> imagesByType = allImages.stream()
+                .collect(Collectors.groupingBy(KosImage::getType));
+
+        // Kirim objek DTO untuk form binding
+        model.addAttribute("kos", convertToKosRequest(kos)); // 'kos' object for the form
+
+        // Kirim ID kos untuk action form
+        model.addAttribute("id", id);
+
+        // PERBAIKAN: Kirim Map dari gambar yang sudah dikelompokkan ke view
+        model.addAttribute("existingImages", imagesByType);
 
         return "edit-kos";
     }
 
     @PostMapping("/edit/{id}")
     public String editKos(
-            @PathVariable("id") Long id,
-            @Valid @ModelAttribute("kos") KosRequest request,
+            @PathVariable("id") Long kosId,
+            @Valid @ModelAttribute("kos") KosRequest kosRequest,
             BindingResult bindingResult,
-            @RequestParam(value = "images", required = false) List<MultipartFile> images,
-            RedirectAttributes redirectAttributes) {
+            // Terima setiap file secara terpisah dan buat menjadi tidak wajib (required =
+            // false)
+            @RequestParam(value = "frontBuilding", required = false) MultipartFile frontBuildingFile,
+            @RequestParam(value = "interior", required = false) MultipartFile interiorFile,
+            @RequestParam(value = "streetView", required = false) MultipartFile streetViewFile,
+            @RequestParam(value = "roomFront", required = false) MultipartFile roomFrontFile,
+            @RequestParam(value = "roomInterior", required = false) MultipartFile roomInteriorFile,
+            @RequestParam(value = "bathroom", required = false) MultipartFile bathroomFile,
+            @RequestParam(value = "additionalImages", required = false) MultipartFile[] additionalImageFiles,
+            RedirectAttributes redirectAttributes,
+            Model model // Tambahkan Model untuk mengembalikan data jika validasi gagal
+    ) {
         if (bindingResult.hasErrors()) {
+            // Jika validasi dasar gagal, kembalikan ke form dengan pesan error
+            // Kita juga perlu mengisi kembali model dengan gambar yang sudah ada
+            prepareEditFormModel(kosId, model);
+            model.addAttribute("error", "Data yang Anda masukkan tidak valid. Mohon periksa kembali.");
             return "edit-kos";
         }
 
         try {
-            Kos kos = convertToKos(request);
-            kosService.updateKos(id, kos, images);
-            redirectAttributes.addFlashAttribute("success", "Kos berhasil diperbarui");
-            return "redirect:/kos/detail/" + id;
+            // Kelompokkan file-file yang di-upload ke dalam sebuah Map
+            Map<String, MultipartFile> singleImageMap = Map.of(
+                    "front_house", frontBuildingFile,
+                    "inside_house", interiorFile,
+                    "road", streetViewFile,
+                    "front_room", roomFrontFile,
+                    "inside_room", roomInteriorFile,
+                    "bathroom", bathroomFile);
+
+            // Panggil service update yang sudah diperbarui
+            kosService.updateKosAndImages(kosId, kosRequest, singleImageMap, additionalImageFiles);
+
+            redirectAttributes.addFlashAttribute("success", "Kos berhasil diperbarui.");
+            return "redirect:/kos/detail/" + kosId;
+
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/kos/edit/" + id;
+            e.printStackTrace(); // Log error
+            redirectAttributes.addFlashAttribute("error", "Gagal memperbarui kos: " + e.getMessage());
+            return "redirect:/kos/edit/" + kosId;
         }
+    }
+
+    // Helper method untuk menghindari duplikasi kode saat menyiapkan model untuk
+    // form edit
+    private void prepareEditFormModel(Long kosId, Model model) {
+        Kos kos = kosService.getKosById(kosId);
+        List<KosImage> allImages = kosService.getKosImages(kosId);
+        Map<String, List<KosImage>> imagesByType = allImages.stream().collect(Collectors.groupingBy(KosImage::getType));
+
+        model.addAttribute("kos", convertToKosRequest(kos));
+        model.addAttribute("kosId", kosId);
+        model.addAttribute("existingImages", imagesByType);
     }
 
     @PostMapping("/delete/{id}")
