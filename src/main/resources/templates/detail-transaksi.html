@@ -26,13 +26,71 @@
             border-left: 4px solid #10b981;
         }
 
-        .quick-action-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        .card-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        .quick-action-card:hover {
-            transform: translateY(-5px);
+        .info-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: #10b981;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .profile-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .financial-item {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: #f9fafb;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .financial-item:hover {
+            background: #f3f4f6;
+            border-left-color: #10b981;
+        }
+
+        .action-button {
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .detail-row {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .empty-state {
+            color: #9ca3af;
+            font-style: italic;
         }
     </style>
 </head>
@@ -40,13 +98,12 @@
 <body class="bg-gray-50">
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div class="sidebar w-64 bg-white shadow-md fixed h-full">
+        <div class="sidebar w-64 bg-white shadow-lg fixed h-full z-20">
             <div class="p-4 flex items-center space-x-2 border-b border-gray-200 h-16">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-600" viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path
-                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                </svg>
+                <div
+                    class="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-home text-white text-sm"></i>
+                </div>
                 <h1
                     class="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                     KosKeun</h1>
@@ -54,50 +111,58 @@
 
             <div class="p-4">
                 <!-- User Profile -->
-                <div class="flex items-center space-x-3 mb-6 p-2 rounded-lg bg-emerald-50">
+                <div
+                    class="flex items-center space-x-3 mb-6 p-3 rounded-xl bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100">
                     <div sec:authorize="isAuthenticated()">
-                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
-                            alt="Profile" class="w-10 h-10 rounded-full object-cover">
+                        <div
+                            class="w-12 h-12 rounded-full profile-avatar flex items-center justify-center text-white font-semibold text-lg">
+                            <span
+                                th:text="${#authentication.principal.fullName != null ? #authentication.principal.fullName.substring(0,1).toUpperCase() : 'U'}">J</span>
+                        </div>
                     </div>
 
                     <div sec:authorize="isAnonymous()">
-                        <img src="https://i.pravatar.cc/150?u=anonymous" alt="Profile"
-                            class="w-10 h-10 rounded-full object-cover">
+                        <div
+                            class="w-12 h-12 rounded-full profile-avatar flex items-center justify-center text-white font-semibold text-lg">
+                            <i class="fas fa-user"></i>
+                        </div>
                     </div>
                     <div>
-                        <p class="font-medium text-gray-900" th:text="${#authentication.principal.fullName}">John Doe
-                        </p>
-                        <p class="text-xs text-gray-500" th:text="${#authentication.principal.roleName}">Pemilik Kos
-                        </p>
+                        <p class="font-semibold text-gray-900"
+                            th:text="${#authentication.principal.fullName ?: 'Guest User'}">John Doe</p>
+                        <p class="text-xs text-emerald-600 font-medium"
+                            th:text="${#authentication.principal.roleName ?: 'Pengunjung'}">Pemilik Kos</p>
                     </div>
                 </div>
 
                 <!-- Menu Items -->
                 <nav class="space-y-1">
-                    <a href="/dashboard" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/dashboard"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-emerald-600">
                         <i class="fas fa-tachometer-alt text-emerald-600 w-5"></i>
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-emerald-600">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
                     </a>
 
-                    <a href="/kos/search" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/kos/search"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-emerald-600">
                         <i class="fas fa-search text-emerald-600 w-5"></i>
                         <span>Cari Kos</span>
                     </a>
 
                     <a href="/kos/approval" sec:authorize="hasRole('ROLE_ADMIN')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-emerald-600">
                         <i class="fas fa-pen text-emerald-600 w-5"></i>
                         <span>Pengajuan Kos</span>
                     </a>
 
                     <a href="/transactions/bookings" sec:authorize="hasRole('ROLE_PENCARI')"
-                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-emerald-600">
                         <i class="fas fa-calendar-check text-emerald-600 w-5"></i>
                         <span>Pengajuan Sewa</span>
                     </a>
@@ -108,14 +173,15 @@
                         <span>Transaksi</span>
                     </a>
 
-                    <a href="/profile" class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
+                    <a href="/profile"
+                        class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-emerald-600">
                         <i class="fas fa-user text-emerald-600 w-5"></i>
                         <span>Profil Saya</span>
                     </a>
 
                     <form th:action="@{/auth/logout}" method="POST" class="m-0">
                         <button type="submit"
-                            class="sidebar-item w-full flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-red-600">
+                            class="sidebar-item w-full flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:text-red-600 hover:bg-red-50">
                             <i class="fas fa-sign-out-alt text-red-500 w-5"></i>
                             <span>Keluar</span>
                         </button>
@@ -129,12 +195,18 @@
             <!-- Top Bar -->
             <div class="bg-white shadow-sm h-16 flex items-center justify-between px-6 fixed w-full z-10"
                 style="width: calc(100% - 16rem)">
-                <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
                 <div class="flex items-center space-x-4">
-                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                    <h2 class="text-xl font-bold text-gray-800">Detail Transaksi</h2>
+                    <div class="h-6 w-px bg-gray-300"></div>
+                    <span class="text-sm text-gray-500" th:text="'ID: #' + ${transaction.id}"></span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button
+                        class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-emerald-100 hover:text-emerald-600 transition-colors">
                         <i class="fas fa-bell"></i>
                     </button>
-                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                    <button
+                        class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-emerald-100 hover:text-emerald-600 transition-colors">
                         <i class="fas fa-envelope"></i>
                     </button>
                 </div>
@@ -142,128 +214,297 @@
 
             <!-- Page Content -->
             <main class="p-6 mt-16">
-                <div class="max-w-4xl mx-auto">
-                    <div class="flex justify-between items-center mb-6" th:switch="${transaction.status}">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-800">Detail Transaksi</h1>
-                            <p class="text-gray-500" th:text="'ID: #' + ${transaction.id}"></p>
+                <div class="max-w-7xl mx-auto">
+                    <!-- Status Header -->
+                    <div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-800 mb-2">Detail Transaksi</h1>
+                                <p class="text-gray-500">Kelola dan pantau status transaksi Anda</p>
+                            </div>
+                            <div th:switch="${transaction.status}">
+                                <span class="status-badge bg-gray-100 text-gray-700" th:case="'PENDING'">
+                                    <i class="fas fa-clock"></i>
+                                    PENDING
+                                </span>
+                                <span class="status-badge bg-blue-100 text-blue-700" th:case="'WAITING_PAYMENT'">
+                                    <i class="fas fa-credit-card"></i>
+                                    MENUNGGU PEMBAYARAN
+                                </span>
+                                <span class="status-badge bg-yellow-100 text-yellow-700"
+                                    th:case="'WAITING_CONFIRMATION'">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    MENUNGGU KONFIRMASI
+                                </span>
+                                <span class="status-badge bg-teal-100 text-teal-700" th:case="'DOWN_PAYMENT'">
+                                    <i class="fas fa-wallet"></i>
+                                    PEMBAYARAN DP
+                                </span>
+                                <span class="status-badge bg-green-100 text-green-700" th:case="'COMPLETED'">
+                                    <i class="fas fa-check-circle"></i>
+                                    SELESAI
+                                </span>
+                            </div>
                         </div>
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-gray-200 text-gray-800"
-                            th:case="'PENDING'">PENDING</span>
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800"
-                            th:case="'WAITING_PAYMENT'">MENUNGGU PEMBAYARAN</span>
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800"
-                            th:case="'WAITING_CONFIRMATION'">MENUNGGU KONFIRMASI</span>
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-teal-100 text-teal-800"
-                            th:case="'DOWN_PAYMENT'">PEMBAYARAN DP</span>
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800"
-                            th:case="'COMPLETED'">SELESAI</span>
-                        </span>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 space-y-6">
-                            <div class="bg-white p-6 rounded-xl shadow">
-                                <h2 class="text-xl font-bold mb-4">Informasi Kos</h2>
-                                <p class="font-semibold text-lg" th:text="${transaction.kos.name}"></p>
-                                <p class="text-sm text-gray-600" th:text="${transaction.kos.address}"></p>
-                                <hr class="my-4">
-                                <div class="text-sm space-y-2">
-                                    <p><strong>Periode Sewa:</strong> <span
-                                            th:text="${#dates.format(transaction.startDate, 'dd MMM yyyy')} + ' - ' + ${#dates.format(transaction.endDate, 'dd MMM yyyy')}"></span>
-                                    </p>
-                                    <p><strong>Durasi:</strong> <span
-                                            th:text="${transaction.durationInMonths} + ' bulan'"></span></p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Left Column -->
+                        <div class="lg:col-span-2 space-y-8">
+                            <!-- Informasi Kos -->
+                            <div class="info-card bg-white p-6 rounded-2xl shadow-sm">
+                                <div class="flex items-center mb-4">
+                                    <div
+                                        class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-home text-emerald-600"></i>
+                                    </div>
+                                    <h2 class="text-xl font-bold text-gray-800">Informasi Kos</h2>
+                                </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <h3 class="font-semibold text-lg text-gray-900"
+                                            th:text="${transaction.kos.name + ' Tipe ' + transaction.kos.type  ?: '-'}">
+                                            Nama Kos</h3>
+                                        <p class="text-gray-600 flex items-center mt-1">
+                                            <i class="fas fa-user text-gray-400 mr-2"></i>
+                                            <span class="capitalize"
+                                                th:text="${transaction.kos.category ?: '-'}">Jenis</span>
+                                        </p>
+                                        <p class="text-gray-600 flex items-center mt-1">
+                                            <i class="fas fa-map-marker-alt text-gray-400 mr-2"></i>
+                                            <span th:text="${transaction.kos.address ?: '-'}">Alamat Kos</span>
+                                        </p>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                                        <div class="detail-row">
+                                            <label class="text-sm font-medium text-gray-500">Periode Sewa</label>
+                                            <p class="text-gray-900 font-medium" th:text="${transaction.startDate != null and transaction.endDate != null ? 
+                                                         (#dates.format(transaction.startDate, 'dd MMM yyyy') + ' - ' + #dates.format(transaction.endDate, 'dd MMM yyyy')) : 
+                                                         '-'}">
+                                                -
+                                            </p>
+                                        </div>
+                                        <div class="detail-row">
+                                            <label class="text-sm font-medium text-gray-500">Durasi</label>
+                                            <p class="text-gray-900 font-medium"
+                                                th:text="${transaction.durationInMonths != null ? (transaction.durationInMonths + ' bulan') : '-'}">
+                                                -
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="bg-white p-6 rounded-xl shadow">
-                                <h2 class="text-xl font-bold mb-4">Informasi Penyewa</h2>
-                                <p class="font-semibold text-lg" th:text="${transaction.user.fullName}"></p>
-                                <p class="text-sm text-gray-600" th:text="${transaction.user.email}"></p>
-                                <p class="text-sm text-gray-600" th:text="${transaction.user.phoneNumber}"></p>
+                            <!-- Informasi Penyewa -->
+                            <div class="info-card bg-white p-6 rounded-2xl shadow-sm">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-user text-blue-600"></i>
+                                    </div>
+                                    <h2 class="text-xl font-bold text-gray-800">Informasi Penyewa</h2>
+                                </div>
+                                <div class="space-y-4">
+                                    <!-- Basic Info -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Nama Lengkap</label>
+                                                <p class="text-gray-900 font-medium"
+                                                    th:text="${transaction.user.fullName ?: '-'}">-</p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Email</label>
+                                                <p class="text-gray-900" th:text="${transaction.user.email ?: '-'}">-
+                                                </p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">No. Telepon</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.phoneNumber ?: '-'}">-</p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Jenis Kelamin</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.gender == 'M' ? 'Laki-laki' : (transaction.user.gender == 'F' ? 'Perempuan' : '-')}">
+                                                    -</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Tanggal Lahir</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.birthDate != null ? #dates.format(transaction.user.birthDate, 'dd MMM yyyy') : '-'}">
+                                                    -</p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Pekerjaan</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.occupation ?: '-'}">-</p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Instansi</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.institutionName ?: '-'}">-</p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Status
+                                                    Pernikahan</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.maritalStatus ?: '-'}">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Additional Info -->
+                                    <div class="pt-4 border-t border-gray-100">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Kota Asal</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.cityOrigin ?: '-'}">-</p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Pendidikan
+                                                    Terakhir</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.lastEducation ?: '-'}">-</p>
+                                            </div>
+                                            <div class="detail-row">
+                                                <label class="text-sm font-medium text-gray-500">Kontak Darurat</label>
+                                                <p class="text-gray-900"
+                                                    th:text="${transaction.user.emergencyContact ?: '-'}">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- Right Column -->
                         <div class="space-y-6">
-                            <div class="bg-white p-6 rounded-xl shadow">
-                                <h2 class="text-xl font-bold mb-4">Detail Finansial</h2>
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between"><span class="text-gray-600">Total
-                                            Harga</span>
-                                        <strong
-                                            th:text="'Rp ' + ${#numbers.formatDecimal(transaction.total, 0, 'POINT', 0, 'COMMA')}"></strong>
+                            <!-- Detail Finansial -->
+                            <div class="info-card bg-white p-6 rounded-2xl shadow-sm">
+                                <div class="flex items-center mb-4">
+                                    <div
+                                        class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-calculator text-green-600"></i>
                                     </div>
-                                    <div class="flex justify-between" th:if="${transaction.downPayment}"><span
-                                            class="text-gray-600">DP Dibayar</span> <span
-                                            th:text="'Rp ' + ${#numbers.formatDecimal(transaction.downPayment, 0, 'POINT', 0, 'COMMA')}"></span>
+                                    <h2 class="text-xl font-bold text-gray-800">Detail Finansial</h2>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="financial-item">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600 font-medium">Total Harga</span>
+                                            <span class="font-bold text-gray-900"
+                                                th:text="${transaction.total != null ? ('Rp ' + #numbers.formatDecimal(transaction.total, 0, 'POINT', 0, 'COMMA')) : '-'}">-</span>
+                                        </div>
                                     </div>
-                                    <div class="flex justify-between" th:if="${transaction.remainingPayment}">
-                                        <span class="text-gray-600">Pelunasan</span> <span
-                                            th:text="'Rp ' + ${#numbers.formatDecimal(transaction.remainingPayment, 0, 'POINT', 0, 'COMMA')}"></span>
+                                    <div class="financial-item"
+                                        th:if="${transaction.downPayment != null and transaction.downPayment > 0}">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600 font-medium">DP Dibayar</span>
+                                            <span class="text-blue-600 font-semibold"
+                                                th:text="'Rp ' + ${#numbers.formatDecimal(transaction.downPayment, 0, 'POINT', 0, 'COMMA')}">-</span>
+                                        </div>
                                     </div>
-                                    <hr class="my-2">
-                                    <div class="flex justify-between font-bold"><span class="text-gray-800">Sisa
-                                            Tagihan</span> <span class="text-red-600"
-                                            th:text="'Rp ' + ${#numbers.formatDecimal(transaction.total - (transaction.downPayment ?: 0) - (transaction.remainingPayment ?: 0), 0, 'POINT', 0, 'COMMA')}"></span>
+                                    <div class="financial-item"
+                                        th:if="${transaction.remainingPayment != null and transaction.remainingPayment > 0}">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-600 font-medium">Pelunasan</span>
+                                            <span class="text-emerald-600 font-semibold"
+                                                th:text="'Rp ' + ${#numbers.formatDecimal(transaction.remainingPayment, 0, 'POINT', 0, 'COMMA')}">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 pt-3 mt-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-800 font-bold">Sisa Tagihan</span>
+                                            <span class="text-red-600 font-bold text-lg"
+                                                th:text="${transaction.total != null ? ('Rp ' + #numbers.formatDecimal(transaction.total - (transaction.downPayment ?: 0) - (transaction.remainingPayment ?: 0), 0, 'POINT', 0, 'COMMA')) : '-'}">-</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="bg-white p-6 rounded-xl shadow">
-                                <h2 class="text-xl font-bold mb-4">Tindakan Diperlukan</h2>
+                            <!-- Tindakan Diperlukan -->
+                            <div class="info-card bg-white p-6 rounded-2xl shadow-sm">
+                                <div class="flex items-center mb-4">
+                                    <div
+                                        class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-tasks text-orange-600"></i>
+                                    </div>
+                                    <h2 class="text-xl font-bold text-gray-800">Tindakan Diperlukan</h2>
+                                </div>
                                 <div th:switch="${transaction.status.toUpperCase()}">
-
                                     <div th:case="'PENDING'">
-                                        <p class="text-sm text-gray-600 mb-4">Penyewa telah mengajukan
-                                            <b>booking</b>.
-                                            Harap
-                                            setujui atau tolak permintaan ini.
-                                        </p>
-                                        <div class="flex gap-4">
+                                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                                            <div class="flex items-start">
+                                                <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-2"></i>
+                                                <p class="text-sm text-yellow-800">
+                                                    Penyewa telah mengajukan <strong>booking</strong>. Harap setujui
+                                                    atau tolak permintaan ini.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-3">
                                             <form th:action="@{/transactions/{id}/review(id=${transaction.id})}"
-                                                method="POST" class="w-full">
+                                                method="POST" class="flex-1">
                                                 <input type="hidden" name="approve" value="true" />
                                                 <button type="submit"
-                                                    class="w-full text-white bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-lg">Setujui</button>
+                                                    class="action-button w-full text-white bg-green-600 hover:bg-green-700 font-semibold py-3 px-4 rounded-lg">
+                                                    <i class="fas fa-check mr-2"></i>Setujui
+                                                </button>
                                             </form>
                                             <form th:action="@{/transactions/{id}/review(id=${transaction.id})}"
-                                                method="POST" class="w-full">
+                                                method="POST" class="flex-1">
                                                 <input type="hidden" name="approve" value="false" />
                                                 <button type="submit"
-                                                    class="w-full text-white bg-red-600 hover:bg-red-700 font-bold py-2 px-4 rounded-lg">Tolak</button>
+                                                    class="action-button w-full text-white bg-red-600 hover:bg-red-700 font-semibold py-3 px-4 rounded-lg">
+                                                    <i class="fas fa-times mr-2"></i>Tolak
+                                                </button>
                                             </form>
                                         </div>
                                     </div>
 
                                     <div th:case="'WAITING_CONFIRMATION'">
-                                        <p class="text-sm text-gray-600 mb-4">Penyewa telah meng-upload bukti
-                                            pembayaran. Harap verifikasi dan konfirmasi.</p>
+                                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                            <div class="flex items-start">
+                                                <i class="fas fa-info-circle text-blue-500 mt-1 mr-2"></i>
+                                                <p class="text-sm text-blue-800">
+                                                    Penyewa telah meng-upload bukti pembayaran. Harap verifikasi dan
+                                                    konfirmasi.
+                                                </p>
+                                            </div>
+                                        </div>
                                         <a th:href="${transaction.dpProofUrl != null ? '/payment-proofs/' + transaction.dpProofUrl : '/payment-proofs/' + transaction.rpProofUrl}"
                                             target="_blank"
-                                            class="block w-full text-center mb-4 text-blue-600 font-semibold hover:underline">
+                                            class="block w-full text-center mb-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors">
                                             <i class="fas fa-receipt mr-2"></i>Lihat Bukti Pembayaran
                                         </a>
-                                        <div class="flex gap-4">
+                                        <div class="flex gap-3">
                                             <form th:action="@{/transactions/{id}/confirm(id=${transaction.id})}"
-                                                method="POST" class="w-full">
+                                                method="POST" class="flex-1">
                                                 <input type="hidden" name="confirm" value="true" />
                                                 <button type="submit"
-                                                    class="w-full text-white bg-green-600 hover:bg-green-700 font-bold py-2 px-4 rounded-lg">Konfirmasi</button>
+                                                    class="action-button w-full text-white bg-green-600 hover:bg-green-700 font-semibold py-3 px-4 rounded-lg">
+                                                    <i class="fas fa-check mr-2"></i>Konfirmasi
+                                                </button>
                                             </form>
                                             <form th:action="@{/transactions/{id}/confirm(id=${transaction.id})}"
-                                                method="POST" class="w-full">
+                                                method="POST" class="flex-1">
                                                 <input type="hidden" name="confirm" value="false" />
                                                 <button type="submit"
-                                                    class="w-full text-white bg-red-600 hover:bg-red-700 font-bold py-2 px-4 rounded-lg">Tolak</button>
+                                                    class="action-button w-full text-white bg-red-600 hover:bg-red-700 font-semibold py-3 px-4 rounded-lg">
+                                                    <i class="fas fa-times mr-2"></i>Tolak
+                                                </button>
                                             </form>
                                         </div>
                                     </div>
 
                                     <div th:case="*">
-                                        <p class="text-sm text-gray-600">Tidak ada tindakan yang diperlukan
-                                            untuk status
-                                            ini.</p>
+                                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                                            <i class="fas fa-check-circle text-gray-400 text-2xl mb-2"></i>
+                                            <p class="text-sm text-gray-600">Tidak ada tindakan yang diperlukan untuk
+                                                status ini.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -275,19 +516,34 @@
     </div>
 
     <script>
-        // Mobile sidebar toggle functionality can be added here
-        // For example:
-        document.getElementById('sidebarToggle').addEventListener('click', function () {
-            document.querySelector('.sidebar').classList.toggle('hidden');
-        });
-
         // Set active sidebar item based on current page
         const currentPath = window.location.pathname;
         document.querySelectorAll('.sidebar-item').forEach(item => {
             const link = item.getAttribute('href');
-            if (currentPath.includes(link)) {
+            if (link && currentPath.includes(link)) {
                 item.classList.add('active');
             }
+        });
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add loading state for form submissions
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function () {
+                const button = this.querySelector('button[type="submit"]');
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                }
+            });
         });
     </script>
 </body>

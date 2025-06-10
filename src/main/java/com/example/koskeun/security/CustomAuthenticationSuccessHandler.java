@@ -42,7 +42,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         sessionRegistry.registerNewSession(session.getId(), authentication.getPrincipal());
 
         // Set session timeout to 1 hour (in seconds)
-        session.setMaxInactiveInterval(3600);
+        session.setMaxInactiveInterval(15 * 60); // 15 minutes
 
         // Clear any authentication attributes and proceed with the redirect
         clearAuthenticationAttributes(request);

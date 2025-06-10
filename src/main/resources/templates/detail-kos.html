@@ -78,7 +78,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="/kos/my" sec:authorize="hasRole(' ROLE_PEMILIK')"
+                    <a href="/kos/my" sec:authorize="hasRole('ROLE_PEMILIK')"
                         class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700">
                         <i class="fas fa-home text-emerald-600 w-5"></i>
                         <span>Kos Saya</span>
@@ -458,12 +458,10 @@
                                         Sewa Sekarang
                                     </button> -->
 
-                                    <form th:action="@{'/kos/edit/' + ${kos.id}}" method="POST">
-                                        <button type="submit"
-                                            class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity mb-4">
-                                            Ubah Data
-                                        </button>
-                                    </form>
+                                    <a th:href="@{'/kos/edit/' + ${kos.id}}"
+                                        class="w-full block text-center bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity mb-4">
+                                        Ubah Data
+                                    </a>
 
                                     <button id="open-modal-button"
                                         class="w-full border border-red-600 text-red-600 py-3 rounded-lg font-medium hover:bg-red-50 transition-colors">

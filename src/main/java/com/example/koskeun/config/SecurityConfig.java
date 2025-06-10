@@ -62,6 +62,7 @@ public class SecurityConfig {
                                                 .clearAuthentication(true)
                                                 .permitAll())
                                 .sessionManagement(session -> session
+                                                .invalidSessionUrl("/login?timeout=true")
                                                 .maximumSessions(1)
                                                 .expiredUrl("/login?expired=true"));
 
