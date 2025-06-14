@@ -469,6 +469,19 @@
                                     </button>
                                 </div>
 
+                                <div sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <!-- Buttons -->
+                                    <button id="open-modal-button"
+                                        class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition-opacity mb-4">
+                                        Approval
+                                    </button>
+
+                                    <button id="open-modal-button"
+                                        class="w-full border border-red-600 text-red-600 py-3 rounded-lg font-medium hover:bg-red-50 transition-colors">
+                                        Hapus
+                                    </button>
+                                </div>
+
                                 <div sec:authorize="isAnonymous()" class="mt-4 text-center bg-gray-100 p-4 rounded-lg">
                                     <p class="text-gray-700">Silakan <a th:href="@{/login}"
                                             class="text-emerald-600 font-bold hover:underline">Masuk</a> sebagai

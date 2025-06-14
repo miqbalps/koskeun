@@ -26,7 +26,6 @@ public class SecurityConfig {
         }
 
         @Bean
-        @SuppressWarnings("deprecation")
         public DaoAuthenticationProvider authenticationProvider() {
                 var provider = new DaoAuthenticationProvider();
                 provider.setPasswordEncoder(passwordEncoder());
@@ -47,7 +46,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/kos/search", "/kos/detail/**").permitAll()
                                                 .requestMatchers("/kos/my/**", "/kos/add/**", "/kos/edit/**")
                                                 .hasRole("PEMILIK")
-                                                .requestMatchers("/dashboard", "/profile").authenticated()
+                                                // --- PERUBAHAN DI SINI ---
+                                                .requestMatchers("/dashboard", "/profile/**").authenticated()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")

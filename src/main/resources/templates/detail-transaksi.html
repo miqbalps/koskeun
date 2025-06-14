@@ -114,18 +114,13 @@
                 <div
                     class="flex items-center space-x-3 mb-6 p-3 rounded-xl bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100">
                     <div sec:authorize="isAuthenticated()">
-                        <div
-                            class="w-12 h-12 rounded-full profile-avatar flex items-center justify-center text-white font-semibold text-lg">
-                            <span
-                                th:text="${#authentication.principal.fullName != null ? #authentication.principal.fullName.substring(0,1).toUpperCase() : 'U'}">J</span>
-                        </div>
+                        <img th:src="${'https://ui-avatars.com/api/?name='+#authentication.principal.fullName}"
+                            alt="Profile" class="w-10 h-10 rounded-full object-cover">
                     </div>
 
                     <div sec:authorize="isAnonymous()">
-                        <div
-                            class="w-12 h-12 rounded-full profile-avatar flex items-center justify-center text-white font-semibold text-lg">
-                            <i class="fas fa-user"></i>
-                        </div>
+                        <img src="https://i.pravatar.cc/150?u=anonymous" alt="Profile"
+                            class="w-10 h-10 rounded-full object-cover">
                     </div>
                     <div>
                         <p class="font-semibold text-gray-900"

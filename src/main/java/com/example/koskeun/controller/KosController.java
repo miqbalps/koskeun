@@ -155,7 +155,10 @@ public class KosController {
 
         // Validasi form
         if (bindingResult.hasErrors()) {
-            model.addAttribute("error", "Mohon periksa kembali form anda");
+            model.addAttribute("error", bindingResult.getAllErrors()
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", ")));
             return "add-kos";
         }
 
